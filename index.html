@@ -288,15 +288,62 @@ int main() {
     pangram();
     return 0;
 }`,
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
-    "Not available yet...", "pneumonoultramicroscopicsilicovolcanoconiosis"
+`#include<bits/stdc++.h>
+using namespace std;
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("FREQ.INP", "r", stdin);
+	freopen("FREQ.OUT", "w", stdout);
+	int n, q;
+	cin >> n;
+	vector<int> a(n), freq(1e6, 0);
+	for(int i = 0; i < n; i++) {
+		cin >> a[i];
+		freq[a[i]]++;
+	}
+	cin >> q;
+	while(q > 0) {
+		int x;
+		cin >> x;
+		cout << freq[x] << (q == 1 ? "" : "\n");
+		q--;
+	}
+	return 0;
+}`, 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...", 
+"Not available yet...",
+"Not available yet...", 
+"pneumonoultramicroscopicsilicovolcanoconiosis"
 ];
 
 // 3. Vòng lặp tự động gắn tiêu đề & nội dung vào nút
