@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Nút Full Width & Popup Dài</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 100%;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        /* Khung cuộn chứa danh sách nút */
+        .button-scroll-container {
+            max-height: 75vh;
+            overflow-y: auto;
+            padding: 10px 15px 10px 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .button-scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .button-scroll-container::-webkit-scrollbar-track {
+            background: #edf2f7;
+            border-radius: 10px;
+        }
+
+        .button-scroll-container::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        /* Nút bấm trải rộng 100% chiều ngang */
+        .nav-btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            background: #ffffff;
+            color: #4a5568;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            color: #667eea;
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.25);
+        }
+
+        /* MODAL BẬT NỔI & LÀM MỜ NỀN */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        /* CẤU HÌNH Ô POPUP DÀI HƠN */
+        .modal-content {
+            background: #ffffff;
+            width: 90%;
+            max-width: 1080px;
+            height: 80vh;
+            max-height: 920px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #a0aec0;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #e53e3e;
+        }
+
+        .modal-title {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        /* VÙNG VĂN BẢN CUỘN BÊN TRONG POPUP */
+        .text-display {
+            color: #4a5568;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Courier New', monospace; /* Đổi font cho code C++ dễ nhìn hơn */
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .text-display::-webkit-scrollbar {
+            width: 6px;
+        }
+        .text-display::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        .copy-btn-modal {
+            width: 100%;
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .copy-btn-modal:hover {
+            background: #2f855a;
+        }
+
+        /* Toast thông báo */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(46, 160, 67, 0.95);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>My C++ tasks</h2>
+    <div class="button-scroll-container" id="buttonList"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <h3 class="modal-title" id="modalTitle">Tiêu đề mục</h3>
+        <div id="text-display" class="text-display"></div>
+        <button class="copy-btn-modal" onclick="copyContentFromModal()">📋 Copy</button>
+    </div>
+</div>
+
+<div id="toast" class="toast">Copied!</div>
+
+<script>
+// 1. Danh sách tiêu đề
+const titles = [
+    "Câu 1: Pangram",
+    "Câu 2: Tần suất",
+    "Câu 3: Tần suất chữ số",
+    "Câu 4: Xóa lặp",
+    "Câu 5: Tần suất nhiều nhất",
+    "Câu 6: Tần suất ký tự",
+    "Câu 7: Tần suất lớn nhất 2",
+    "Câu 8: Tên tệp",
+    "Câu 9: Trai hay gái",
+    "Câu 10: Chỗ ngồi",
+    "Câu 11: Tần suất 2",
+    "Câu 12: Học thủ công",
+    "Câu 13: Các khối chữ",
+    "Câu 14: Đếm cặp 1",
+    "Câu 15: Đếm cặp 2",
+    "Câu 16: Đếm cặp 3",
+    "Câu 17: Đếm cặp 4",
+    "Câu 18: Đếm cặp 5",
+    "Câu 19: Đếm cặp 6",
+    "Câu 20: Đếm bộ ba",
+    "Câu 21: Dây trang trí",
+    "Câu 22: Đếm cặp 7",
+    "Câu 23: Tương hợp bậc",
+    "Câu 24: Tổng bộ ba",
+    "Câu 25: Đếm cặp 8",
+    "Câu 26: Tập trung",
+    "Câu 27: Đếm cặp 9",
+    "Câu 28: HSG",
+    "Câu 29: Đếm bộ số",
+    "Câu 30: Bộ ba phân biệt",
+    "Câu 31: Ghép số",
+    "Câu 32: Bộ ba Đẹp",
+    "Câu 33: Hình vuông",
+    "Câu 34: Chuyến tàu vui vẻ",
+    " Nothing here"
+];
+
+// 2. Danh sách nội dung (Dùng dấu backtick ` ` cho đoạn mã nhiều dòng)
+const contents = [
+`#include<bits/stdc++.h>
+using namespace std;
+
+void pangram() {
+    int n;
+    string s;
+    cin >> n >> s;
+    set<char> st;
+    for(char c : s) {
+        st.insert(tolower(c));
+    }
+    cout << (st.size() == 26 ? "YES" : "NO");
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    freopen("PGR.INP", "r", stdin);
+    freopen("PGR.OUT", "w", stdout);
+    pangram();
+    return 0;
+}`,
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "Not available yet...", "Not available yet...", "Not available yet...",
+    "Not available yet...", "pneumonoultramicroscopicsilicovolcanoconiosis"
+];
+
+// 3. Vòng lặp tự động gắn tiêu đề & nội dung vào nút
+const buttonListContainer = document.getElementById('buttonList');
+
+for (let i = 0; i < titles.length; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    
+    const titleText = titles[i];
+    const contentText = contents[i];
+    
+    btn.innerHTML = `<span>👨🏽‍💻</span> ${titleText}`;
+    
+    btn.onclick = function() { 
+        openModal(titleText, contentText); 
+    };
+    
+    buttonListContainer.appendChild(btn);
+}    
+
+// 4. Các hàm điều khiển Modal
+const modalOverlay = document.getElementById('modalOverlay');
+
+function openModal(title, content) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('text-display').innerText = content; // Đã sửa gán trực tiếp content vào đây
+    modalOverlay.classList.add('show');
+}
+
+function closeModal() {
+    modalOverlay.classList.remove('show');
+}
+
+// Copy văn bản
+function copyContentFromModal() {
+    const textToCopy = document.getElementById('text-display').innerText;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+}
+
+// Đóng bằng phím ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") closeModal();
+});
+</script>
+
+</body>
+</html>
