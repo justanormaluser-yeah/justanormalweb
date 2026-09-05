@@ -363,7 +363,34 @@ int main() {
 	}
 	return 0;
 }`, 
-`Not available yet...`,
+`#include<bits/stdc++.h>
+using namespace std;
+const int max_val = 1000005;
+int freq[max_val] = {0};
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("MXFQ.INP", "r", stdin);
+	freopen("MXFQ.OUT", "w", stdout);
+	int n, cnt = 0;
+	cin >> n;
+	for(int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		freq[a - 1]++;
+	}
+	int maxx = 0;
+	for(int i = 0; i < max_val; i++) {
+		maxx = max(maxx, freq[i]);
+	}
+	for(int i = 0; i < max_val; i++) {
+		if(freq[i] == maxx) {
+			cnt++;
+		}
+	}
+	cout << maxx << " " << cnt;
+	return 0;
+}`,
 `Not available yet...`, 
 `Not available yet...`, 
 `Not available yet...`, 
