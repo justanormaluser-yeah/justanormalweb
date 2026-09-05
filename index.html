@@ -615,7 +615,33 @@ int main() {
 	}
 	return 0;
 }`,
-`Not available yet...`, 
+`#include<bits/stdc++.h>
+using namespace std;
+const int max_val = 200005;
+int cnt[max_val] = {0};
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("CNTP1.INP", "r", stdin);
+	freopen("CNTP1.OUT", "w", stdout);
+	int n;
+	long long k;
+	cin >> n >> k;
+	vector<long long> a(n);
+	for(int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+	long long ans = 0;
+	for(int i = 0; i < n; i++) {
+		long long t = k - a[i];
+		if (t >= -100000 && t <= 100000) {
+			ans += cnt[t + 100000];
+		}
+		cnt[a[i] + 100000]++;
+	}
+	cout << ans;
+	return 0;
+}`, 
 `Not available yet...`, 
 `Not available yet...`, 
 `Not available yet...`,
