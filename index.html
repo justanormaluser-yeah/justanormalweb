@@ -19,6 +19,31 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+        }
+
+        /* ICON HỆ THỐNG GÓC TRÊN BÊN TRÁI */
+        .random-top-left-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 2.2rem;
+            z-index: 900;
+            user-select: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            background: #ffffff;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .random-top-left-icon:hover {
+            transform: scale(1.15) rotate(10deg);
         }
 
         /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
@@ -149,7 +174,7 @@
             font-size: 1.05rem;
             line-height: 1.6;
             white-space: pre;
-            font-family: 'Consolas', 'Courier New', monospace; /* Đổi font cho code C++ dễ nhìn hơn */
+            font-family: 'Consolas', 'Courier New', monospace;
             background: #f7fafc;
             padding: 20px;
             border-radius: 12px;
@@ -208,6 +233,9 @@
 </head>
 <body>
 
+<!-- ICON GÓC TRÊN BÊN TRÁI -->
+<div class="random-top-left-icon" id="topLeftIcon" title="Biểu tượng ngẫu nhiên từ hệ thống">💻</div>
+
 <div class="container">
     <h2>My C++ tasks</h2>
     <div class="button-scroll-container" id="buttonList"></div>
@@ -225,6 +253,29 @@
 <div id="toast" class="toast">Copied!</div>
 
 <script>
+// 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng
+(function generateRandomSystemIcon() {
+    // Các dải mã Unicode chứa toàn bộ biểu tượng, emoji & ký tự đồ họa trong máy tính
+    const symbolRanges = [
+        [0x2300, 0x23FF],   // Technical Symbols (Máy tính, công nghệ, nút bấm)
+        [0x2600, 0x26FF],   // Miscellaneous Symbols (Cảnh báo, thời tiết, ngôi sao)
+        [0x2700, 0x27BF],   // Dingbats (Mũi tên, hoa văn, bút viết)
+        [0x1F300, 0x1F5FF], // Symbols and Pictographs (Công cụ, đồ vật, thiết bị)
+        [0x1F600, 0x1F64F], // Emoticons (Cảm xúc, mặt cười)
+        [0x1F680, 0x1F6FF], // Transport (Phương tiện, vệ tinh)
+        [0x1F900, 0x1F9FF], // Supplemental Symbols
+        [0x1FA70, 0x1FAFF]  // Symbols Extended
+    ];
+
+    // Chọn ngẫu nhiên 1 dải mã
+    const range = symbolRanges[Math.floor(Math.random() * symbolRanges.length)];
+    // Chọn ngẫu nhiên 1 mã icon cụ thể trong dải đó
+    const randomCodePoint = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+    
+    // Gán icon thu được vào góc trên bên trái
+    document.getElementById('topLeftIcon').textContent = String.fromCodePoint(randomCodePoint);
+})();
+
 // 1. Danh sách tiêu đề
 const titles = [
     "Câu 1: Pangram",
@@ -264,7 +315,7 @@ const titles = [
     " Nothing here"
 ];
 
-// 2. Danh sách nội dung (Dùng dấu backtick ` ` cho đoạn mã nhiều dòng)
+// 2. Danh sách nội dung
 const contents = [
 `#include<bits/stdc++.h>
 using namespace std;
@@ -729,7 +780,7 @@ const modalOverlay = document.getElementById('modalOverlay');
 
 function openModal(title, content) {
     document.getElementById('modalTitle').innerText = title;
-    document.getElementById('text-display').innerText = content; // Đã sửa gán trực tiếp content vào đây
+    document.getElementById('text-display').innerText = content;
     modalOverlay.classList.add('show');
 }
 
