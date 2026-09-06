@@ -642,7 +642,47 @@ int main() {
 	cout << ans;
 	return 0;
 }`, 
-`Not available yet...`, 
+`#include<bits/stdc++.h>
+using namespace std;
+const int max_val = 200005;
+int cntl[max_val] = {0};
+int cntr[max_val] = {0};
+long long bleb(long long t) {
+	long long ans1 = 0;
+	for (int x = -100000; x <= 100000; x++) {
+		int cntx = cntl[x + 100000];
+		if (cntx == 0) continue;
+		long long z = t - x;
+		if (z >= -100000 && z <= 100000) {
+			int cntz = cntr[z + 100000];
+			ans1 += (long long)cntx * cntz;
+		}
+	}
+	return ans1;
+}
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("CNTP2.INP", "r", stdin);
+	freopen("CNTP2.OUT", "w", stdout);
+	int n;
+	long long k;
+	cin >> n >> k;
+	vector<long long> a(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		cntr[a[i] + 100000]++;
+	}
+	long long ans = 0;
+	for (int y = 0; y < n; y++) {
+		cntr[a[y] + 100000]--;
+		long long t = k - a[y];
+		ans += bleb(t);
+		cntl[a[y] + 100000]++;
+	}
+	cout << ans;
+	return 0;
+}`, 
 `Not available yet...`, 
 `Not available yet...`,
 `Not available yet...`, 
