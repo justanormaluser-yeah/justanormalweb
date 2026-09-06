@@ -256,17 +256,13 @@
 // 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng
 (function generateRandomSystemIcon() {
     // Các dải mã Unicode chứa toàn bộ biểu tượng, emoji & ký tự đồ họa trong máy tính
-    const symbolRanges = [
-        [0x2300, 0x23FF],   // Technical Symbols (Máy tính, công nghệ, nút bấm)
-        [0x2600, 0x26FF],   // Miscellaneous Symbols (Cảnh báo, thời tiết, ngôi sao)
-        [0x2700, 0x27BF],   // Dingbats (Mũi tên, hoa văn, bút viết)
-        [0x1F300, 0x1F5FF], // Symbols and Pictographs (Công cụ, đồ vật, thiết bị)
-        [0x1F600, 0x1F64F], // Emoticons (Cảm xúc, mặt cười)
-        [0x1F680, 0x1F6FF], // Transport (Phương tiện, vệ tinh)
-        [0x1F900, 0x1F9FF], // Supplemental Symbols
-        [0x1FA70, 0x1FAFF]  // Symbols Extended
+    const emojiOnlyRanges = [
+        [0x1F300, 0x1F5FF], // Đồ vật, công cụ, thời tiết, thiên nhiên (💻, 🚀, 💡, 💎)
+        [0x1F600, 0x1F64F], // Mặt cười, cảm xúc (😀, 😎, 🤖)
+        [0x1F680, 0x1F6FF], // Phương tiện giao thông, vũ trụ (🛸, 🚗, 🚲)
+        [0x1F900, 0x1F9FF], // Biểu tượng bổ sung (🥑, 🥊, 🦊)
+        [0x1FA70, 0x1FAFF]  // Biểu tượng mở rộng (🪙, 🪩, 🪓)
     ];
-
     // Chọn ngẫu nhiên 1 dải mã
     const range = symbolRanges[Math.floor(Math.random() * symbolRanges.length)];
     // Chọn ngẫu nhiên 1 mã icon cụ thể trong dải đó
