@@ -284,6 +284,39 @@
         .quiz-btn:hover {
             background: #3182ce;
         }
+
+        /* POPUP KẾT QUẢ CÂU ĐỐ THAY THẾ ALERT */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+        .result-overlay.show {
+            display: flex;
+        }
+        .result-box {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 16px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .result-message {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -306,6 +339,14 @@
     </div>
 </div>
 
+<!-- MODAL KẾT QUẢ CÂU ĐỐ (THAY CHO ALERT TRÌNH DUYỆT) -->
+<div class="result-overlay" id="resultOverlay">
+    <div class="result-box">
+        <div class="result-message" id="resultMessage"></div>
+        <button class="quiz-btn" onclick="closeResultModal()">OK</button>
+    </div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -320,35 +361,39 @@
 <script>
 // 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng (GIỮ NGUYÊN)
 (function generateRandomSystemIcon() {
-    // Các dải mã Unicode chứa toàn bộ biểu tượng, emoji & ký tự đồ họa trong máy tính
     const symbolRanges = [
-        [0x2300, 0x23FF],   // Technical Symbols (Máy tính, công nghệ, nút bấm)
-        [0x2600, 0x26FF],   // Miscellaneous Symbols (Cảnh báo, thời tiết, ngôi sao)
-        [0x2700, 0x27BF],   // Dingbats (Mũi tên, hoa văn, bút viết)
-        [0x1F300, 0x1F5FF], // Symbols and Pictographs (Công cụ, đồ vật, thiết bị)
-        [0x1F600, 0x1F64F], // Emoticons (Cảm xúc, mặt cười)
-        [0x1F680, 0x1F6FF], // Transport (Phương tiện, vệ tinh)
-        [0x1F900, 0x1F9FF], // Supplemental Symbols
-        [0x1FA70, 0x1FAFF]  // Symbols Extended
+        [0x2300, 0x23FF],
+        [0x2600, 0x26FF],
+        [0x2700, 0x27BF],
+        [0x1F300, 0x1F5FF],
+        [0x1F600, 0x1F64F],
+        [0x1F680, 0x1F6FF],
+        [0x1F900, 0x1F9FF],
+        [0x1FA70, 0x1FAFF]
     ];
 
-    // Chọn ngẫu nhiên 1 dải mã
     const range = symbolRanges[Math.floor(Math.random() * symbolRanges.length)];
-    // Chọn ngẫu nhiên 1 mã icon cụ thể trong dải đó
     const randomCodePoint = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
     
-    // Gán icon thu được vào góc trên bên trái
     document.getElementById('topLeftIcon').textContent = String.fromCodePoint(randomCodePoint);
 })();
 
 // XỬ LÝ SỰ KIỆN CLICK VÀO ICON GÓC TRÊN BÊN TRÁI
 let quizTimerInterval = null;
 let quizTimeLeft = 10;
+const quizInput = document.getElementById('quizInput');
+
+// TỰ ĐỘNG THAY "2" THÀNH "3" NGAY KHI GÕ HOẶC DÁN
+quizInput.addEventListener('input', function() {
+    if (this.value.includes('2')) {
+        this.value = this.value.replace(/2/g, '3');
+    }
+});
 
 document.getElementById('topLeftIcon').onclick = function() {
     document.getElementById('quizOverlay').classList.add('show');
-    document.getElementById('quizInput').value = '';
-    document.getElementById('quizInput').focus();
+    quizInput.value = '';
+    quizInput.focus();
     
     quizTimeLeft = 10;
     document.getElementById('quizTimer').innerText = quizTimeLeft;
@@ -358,22 +403,19 @@ document.getElementById('topLeftIcon').onclick = function() {
         quizTimeLeft--;
         document.getElementById('quizTimer').innerText = quizTimeLeft;
         if (quizTimeLeft <= 0) {
-            finishQuiz("You are an idiot");
+            finishQuiz("You are an idiot!");
         }
     }, 1000);
 };
 
 function checkQuizAnswer() {
-    const val = document.getElementById('quizInput').value.trim().toLowerCase();
+    const val = quizInput.value.trim().toLowerCase();
     
     if (val === "two") {
-        finishQuiz("Chính xác! Bạn thông minh đấy.");
-    } else if (val === "2") {
-        finishQuiz("3");
+        finishQuiz("That's right! Maybe you're smarter than I thought...");
     } else if (!isNaN(val) && val !== "") {
         const inputNum = parseInt(val);
         let num;
-        // Tạo số ngẫu nhiên đảm bảo KHÔNG BAO GIỜ RA 2 và KHÔNG TRÙNG số đã nhập
         do {
             num = Math.floor(Math.random() * 100) + 1;
         } while (num === 2 || num === inputNum);
@@ -386,11 +428,20 @@ function checkQuizAnswer() {
 
 function finishQuiz(message) {
     clearInterval(quizTimerInterval);
-    alert(message);
     document.getElementById('quizOverlay').classList.remove('show');
+    showResultModal(message);
 }
 
-document.getElementById('quizInput').addEventListener('keypress', function(e) {
+function showResultModal(msg) {
+    document.getElementById('resultMessage').innerText = msg;
+    document.getElementById('resultOverlay').classList.add('show');
+}
+
+function closeResultModal() {
+    document.getElementById('resultOverlay').classList.remove('show');
+}
+
+quizInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         checkQuizAnswer();
     }
@@ -920,7 +971,10 @@ function copyContentFromModal() {
 
 // Đóng bằng phím ESC
 document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === "Escape") {
+        closeModal();
+        closeResultModal();
+    }
 });
 </script>
 
