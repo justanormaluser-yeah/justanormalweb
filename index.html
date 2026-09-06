@@ -229,16 +229,81 @@
         .toast.show {
             opacity: 1;
         }
+
+        /* STYLES CHO HỘP CÂU ĐỐ ICON */
+        .quiz-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .quiz-overlay.show {
+            display: flex;
+        }
+        .quiz-box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .quiz-timer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e53e3e;
+            margin: 10px 0;
+        }
+        .quiz-input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+        }
+        .quiz-btn {
+            width: 100%;
+            padding: 10px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .quiz-btn:hover {
+            background: #3182ce;
+        }
     </style>
 </head>
 <body>
 
 <!-- ICON GÓC TRÊN BÊN TRÁI -->
-<div class="random-top-left-icon" id="topLeftIcon" title="Biểu tượng ngẫu nhiên từ hệ thống">💻</div>
+<div class="random-top-left-icon" id="topLeftIcon" title="bleb bleb, don't click me">💻</div>
 
 <div class="container">
     <h2>My C++ tasks</h2>
     <div class="button-scroll-container" id="buttonList"></div>
+</div>
+
+<!-- MODAL CÂU ĐỐ ICON -->
+<div class="quiz-overlay" id="quizOverlay">
+    <div class="quiz-box">
+        <h3>1 + 1 = ?</h3>
+        <div class="quiz-timer" id="quizTimer">10</div>
+        <input type="text" class="quiz-input" id="quizInput" placeholder="Nhập đáp án..." autocomplete="off">
+        <button class="quiz-btn" onclick="checkQuizAnswer()">Gửi</button>
+    </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
@@ -253,7 +318,7 @@
 <div id="toast" class="toast">Copied!</div>
 
 <script>
-// 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng
+// 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng (GIỮ NGUYÊN)
 (function generateRandomSystemIcon() {
     // Các dải mã Unicode chứa toàn bộ biểu tượng, emoji & ký tự đồ họa trong máy tính
     const symbolRanges = [
@@ -275,6 +340,61 @@
     // Gán icon thu được vào góc trên bên trái
     document.getElementById('topLeftIcon').textContent = String.fromCodePoint(randomCodePoint);
 })();
+
+// XỬ LÝ SỰ KIỆN CLICK VÀO ICON GÓC TRÊN BÊN TRÁI
+let quizTimerInterval = null;
+let quizTimeLeft = 10;
+
+document.getElementById('topLeftIcon').onclick = function() {
+    document.getElementById('quizOverlay').classList.add('show');
+    document.getElementById('quizInput').value = '';
+    document.getElementById('quizInput').focus();
+    
+    quizTimeLeft = 10;
+    document.getElementById('quizTimer').innerText = quizTimeLeft;
+    
+    clearInterval(quizTimerInterval);
+    quizTimerInterval = setInterval(() => {
+        quizTimeLeft--;
+        document.getElementById('quizTimer').innerText = quizTimeLeft;
+        if (quizTimeLeft <= 0) {
+            finishQuiz("You are an idiot");
+        }
+    }, 1000);
+};
+
+function checkQuizAnswer() {
+    const val = document.getElementById('quizInput').value.trim().toLowerCase();
+    
+    if (val === "two") {
+        finishQuiz("Chính xác! Bạn thông minh đấy.");
+    } else if (val === "2") {
+        finishQuiz("3");
+    } else if (!isNaN(val) && val !== "") {
+        const inputNum = parseInt(val);
+        let num;
+        // Tạo số ngẫu nhiên đảm bảo KHÔNG BAO GIỜ RA 2 và KHÔNG TRÙNG số đã nhập
+        do {
+            num = Math.floor(Math.random() * 100) + 1;
+        } while (num === 2 || num === inputNum);
+        
+        finishQuiz(num.toString());
+    } else {
+        finishQuiz("You are an idiot");
+    }
+}
+
+function finishQuiz(message) {
+    clearInterval(quizTimerInterval);
+    alert(message);
+    document.getElementById('quizOverlay').classList.remove('show');
+}
+
+document.getElementById('quizInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        checkQuizAnswer();
+    }
+});
 
 // 1. Danh sách tiêu đề
 const titles = [
@@ -773,7 +893,7 @@ for (let i = 0; i < titles.length; i++) {
     };
     
     buttonListContainer.appendChild(btn);
-}    
+}   
 
 // 4. Các hàm điều khiển Modal
 const modalOverlay = document.getElementById('modalOverlay');
