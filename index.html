@@ -173,7 +173,7 @@
             color: #4a5568;
             font-size: 1.05rem;
             line-height: 1.6;
-            white-space: pre;
+            white-space: pre-wrap;
             font-family: 'Consolas', 'Courier New', monospace;
             background: #f7fafc;
             padding: 20px;
@@ -256,7 +256,7 @@
 // 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng
 (function generateRandomSystemIcon() {
     // Các dải mã Unicode chứa toàn bộ biểu tượng, emoji & ký tự đồ họa trong máy tính
-    const emojiOnlyRanges = [
+    const symbolRanges = [
         [0x1F300, 0x1F5FF], // Đồ vật, công cụ, thời tiết, thiên nhiên (💻, 🚀, 💡, 💎)
         [0x1F600, 0x1F64F], // Mặt cười, cảm xúc (😀, 😎, 🤖)
         [0x1F680, 0x1F6FF], // Phương tiện giao thông, vũ trụ (🛸, 🚗, 🚲)
