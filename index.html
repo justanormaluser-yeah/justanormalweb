@@ -389,13 +389,28 @@ function getRandomNonTwoDigit() {
     return validDigits[Math.floor(Math.random() * validDigits.length)];
 }
 
-// 2. BẮT SỰ KIỆN: GÕ BẤT KỲ KÝ TỰ/SỐ NÀO CŨNG TỰ ĐỔI THÀNH SỐ NGẪU NHIÊN (KHÔNG RA 2)
+// 2. BIẾN ĐỔI KÝ TỰ MỚI GÕ THÀNH SỐ NGẪU NHIÊN, KÝ TỰ CŨ GIỮ NGUYÊN
+let previousValue = '';
+
 quizInput.addEventListener('input', function() {
-    let result = '';
-    for (let i = 0; i < this.value.length; i++) {
-        result += getRandomNonTwoDigit();
+    let currentValue = this.value;
+
+    // Nếu người dùng vừa gõ thêm ký tự mới vào cuối
+    if (currentValue.length > previousValue.length) {
+        let addedCount = currentValue.length - previousValue.length;
+        let newDigits = '';
+        for (let i = 0; i < addedCount; i++) {
+            newDigits += getRandomNonTwoDigit();
+        }
+        this.value = previousValue + newDigits;
+    } 
+    // Nếu người dùng xóa ký tự thì giữ nguyên phần còn lại
+    else if (currentValue.length < previousValue.length) {
+        this.value = currentValue;
     }
-    this.value = result;
+
+    // Cập nhật lại chuỗi hiện tại để giữ nguyên cho lần gõ sau
+    previousValue = this.value;
 });
 
 document.getElementById('topLeftIcon').onclick = function() {
@@ -964,7 +979,29 @@ int main() {
 	cout << ans;
 	return 0;
 }`,
-`Not available yet...`, 
+`#include<bits/stdc++.h>
+#define int long long
+using namespace std;
+const int max_val = 1000005;
+int cnt[max_val] = {0};
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("CNTP5.INP", "r", stdin);
+	freopen("CNTP5.OUT", "w", stdout);
+	int n, k;
+	cin >> n >> k;
+	int ans = 0;
+	for(int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		int r = ((x % k) + k) % k;
+		ans += cnt[r];
+		cnt[r]++;
+	}
+	cout << ans;
+	return 0;
+}`, 
 `Not available yet...`, 
 `Not available yet...`, 
 `Not available yet...`,
