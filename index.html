@@ -423,8 +423,9 @@ document.getElementById('topLeftIcon').onclick = function() {
 function checkQuizAnswer() {
     const val = quizInput.value.trim().toLowerCase();
     
-    if (val === "two") {
-        finishQuiz("That's right! \n Maybe you're smarter than I thought...");
+    // Chấp nhận cả chữ "two" lẫn dạng nhị phân "10"
+    if (val === "two" || val === "10") {
+        finishQuiz("Well...that's right!\n Maybe you're smarter than I thought...");
     } else if (!isNaN(val) && val !== "") {
         const inputNum = parseInt(val);
         let num;
@@ -434,10 +435,9 @@ function checkQuizAnswer() {
         
         finishQuiz(num.toString());
     } else {
-        finishQuiz("You are an idiot");
+        finishQuiz("You are an idiot \n 🤣🤣🤣");
     }
 }
-
 function finishQuiz(message) {
     clearInterval(quizTimerInterval);
     document.getElementById('quizOverlay').classList.remove('show');
