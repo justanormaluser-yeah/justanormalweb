@@ -383,34 +383,23 @@ let quizTimerInterval = null;
 let quizTimeLeft = 10;
 const quizInput = document.getElementById('quizInput');
 
-// 1. KHAI BÁO HÀM TẠO SỐ NGẪU NHIÊN (KHÔNG BAO GIỜ RA SỐ 2)
-function getRandomNonTwoDigit() {
-    const validDigits = ['0', '1', '3', '4', '5', '6', '7', '8', '9'];
-    return validDigits[Math.floor(Math.random() * validDigits.length)];
+// 1. KHAI BÁO HÀM CHỈ LẤY SỐ 0 HOẶC 1 NGẪU NHIÊN
+function getRandomBinaryDigit() {
+    return Math.random() < 0.5 ? '0' : '1';
 }
 
-// 2. BIẾN ĐỔI KÝ TỰ MỚI GÕ THÀNH SỐ NGẪU NHIÊN, KÝ TỰ CŨ GIỮ NGUYÊN
-let previousValue = '';
-
+// 2. BẮT SỰ KIỆN: CHỈ GIỮ NGUYÊN 0 VÀ 1, KÝ TỰ KHÁC BIẾN THÀNH 0 HOẶC 1
 quizInput.addEventListener('input', function() {
-    let currentValue = this.value;
-
-    // Nếu người dùng vừa gõ thêm ký tự mới vào cuối
-    if (currentValue.length > previousValue.length) {
-        let addedCount = currentValue.length - previousValue.length;
-        let newDigits = '';
-        for (let i = 0; i < addedCount; i++) {
-            newDigits += getRandomNonTwoDigit();
+    let result = '';
+    for (let i = 0; i < this.value.length; i++) {
+        let char = this.value[i];
+        if (char === '0' || char === '1') {
+            result += char;
+        } else {
+            result += getRandomBinaryDigit();
         }
-        this.value = previousValue + newDigits;
-    } 
-    // Nếu người dùng xóa ký tự thì giữ nguyên phần còn lại
-    else if (currentValue.length < previousValue.length) {
-        this.value = currentValue;
     }
-
-    // Cập nhật lại chuỗi hiện tại để giữ nguyên cho lần gõ sau
-    previousValue = this.value;
+    this.value = result;
 });
 
 document.getElementById('topLeftIcon').onclick = function() {
