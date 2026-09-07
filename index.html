@@ -991,7 +991,29 @@ signed main() {
 	cout << ans;
 	return 0;
 }`, 
-`Not available yet...`, 
+`#include<bits/stdc++.h>
+#define int long long
+using namespace std;
+const int max_val = 1000005;
+int cnt[max_val] = {0};
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("CNTP6.INP", "r", stdin);
+	freopen("CNTP6.OUT", "w", stdout);
+	int n, k;
+	cin >> n >> k;
+	int ans = 0;
+	for(int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		int r = ((x % k) + k) % k;
+		ans += cnt[r];
+		cnt[r]++;
+	}
+	cout << ans;
+	return 0;
+}`, 
 `Not available yet...`, 
 `Not available yet...`,
 `Not available yet...`, 
