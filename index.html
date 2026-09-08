@@ -43,7 +43,7 @@
         }
 
         .random-top-left-icon:hover {
-            transform: scale(1.15) rotate(3600deg);
+            transform: scale(1.30);
         }
 
         /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
@@ -1014,7 +1014,50 @@ signed main() {
 	cout << ans;
 	return 0;
 }`, 
-`Not available yet...`, 
+`#include <bits/stdc++.h>
+#define int long long
+using namespace std;
+const int max_val = 1000005;
+int cnt1[max_val] = {0};
+int cnt2[max_val] = {0};
+int cnt3[max_val] = {0};
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("TRPL.INP", "r", stdin);
+	freopen("TRPL.OUT", "w", stdout);
+	int n;
+	cin >> n;
+	for(int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		if(x > 0) {
+			cnt1[x]++;
+		}
+	}
+	for(int i = 0; i < n; i++) {
+		int y;
+		cin >> y;
+		if(y > 0) {
+			cnt2[y]++;
+		}
+	}
+	for(int i = 0; i < n; i++) {
+		int z;
+		cin >> z;
+		if(z > 0) {
+			cnt3[z]++;
+		}
+	}
+	int ans = 0;
+	for(int i = 0; i < max_val; i++) {
+		if(cnt1[i] > 0 && cnt2[i] > 0 && cnt3[i] > 0) {
+			ans += cnt1[i] * cnt2[i] * cnt3[i];
+		}
+	}
+	cout << ans;
+	return 0;
+}`, 
 `Not available yet...`,
 `Not available yet...`, 
 `Not available yet...`, 
