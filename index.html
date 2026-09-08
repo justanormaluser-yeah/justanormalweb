@@ -383,20 +383,21 @@ let quizTimerInterval = null;
 let quizTimeLeft = 10;
 const quizInput = document.getElementById('quizInput');
 
-// 1. KHAI BÁO HÀM CHỈ LẤY SỐ 0 HOẶC 1 NGẪU NHIÊN
-function getRandomBinaryDigit() {
-    return Math.random() < 0.5 ? '0' : '1';
+// 1. KHAI BÁO HÀM TẠO SỐ NGẪU NHIÊN TỪ 3 ĐẾN 9
+function getRandomFrom3To9() {
+    const validDigits = ['3', '4', '5', '6', '7', '8', '9'];
+    return validDigits[Math.floor(Math.random() * validDigits.length)];
 }
 
-// 2. BẮT SỰ KIỆN: CHỈ GIỮ NGUYÊN 0 VÀ 1, KÝ TỰ KHÁC BIẾN THÀNH 0 HOẶC 1
+// 2. GIỮ NGUYÊN 0 VÀ 1, KÝ TỰ KHÁC BIẾN THÀNH SỐ NGẪU NHIÊN (3-9)
 quizInput.addEventListener('input', function() {
     let result = '';
     for (let i = 0; i < this.value.length; i++) {
         let char = this.value[i];
         if (char === '0' || char === '1') {
-            result += char;
+            result += char; // Giữ nguyên 0 và 1
         } else {
-            result += getRandomBinaryDigit();
+            result += getRandomFrom3To9(); // Các ký tự khác đổi thành số ngẫu nhiên từ 3 đến 9
         }
     }
     this.value = result;
