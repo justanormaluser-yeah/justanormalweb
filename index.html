@@ -383,26 +383,44 @@ let quizTimerInterval = null;
 let quizTimeLeft = 10;
 const quizInput = document.getElementById('quizInput');
 
-// 1. KHAI BÁO HÀM TẠO SỐ NGẪU NHIÊN TỪ 3 ĐẾN 9
+// 1. HÀM TẠO SỐ NGẪU NHIÊN TỪ 3 ĐẾN 9
 function getRandomFrom3To9() {
     const validDigits = ['3', '4', '5', '6', '7', '8', '9'];
     return validDigits[Math.floor(Math.random() * validDigits.length)];
 }
 
-// 2. GIỮ NGUYÊN 0 VÀ 1, KÝ TỰ KHÁC BIẾN THÀNH SỐ NGẪU NHIÊN (3-9)
-quizInput.addEventListener('input', function() {
-    let result = '';
-    for (let i = 0; i < this.value.length; i++) {
-        let char = this.value[i];
-        if (char === '0' || char === '1') {
-            result += char; // Giữ nguyên 0 và 1
-        } else {
-            result += getRandomFrom3To9(); // Các ký tự khác đổi thành số ngẫu nhiên từ 3 đến 9
-        }
-    }
-    this.value = result;
-});
+// 2. GIỮ NGUYÊN KÝ TỰ ĐẰNG TRƯỚC, CHỈ BIẾN ĐỔI KÝ TỰ MỚI GÕ
+let previousValue = '';
 
+quizInput.addEventListener('input', function() {
+    let currentValue = this.value;
+
+    // Nếu người dùng gõ thêm ký tự mới
+    if (currentValue.length > previousValue.length) {
+        let addedCount = currentValue.length - previousValue.length;
+        let newChars = '';
+        
+        // Duyệt qua từng ký tự vừa được thêm vào
+        for (let i = previousValue.length; i < currentValue.length; i++) {
+            let char = currentValue[i];
+            if (char === '0' || char === '1') {
+                newChars += char; // Giữ nguyên 0 và 1
+            } else {
+                newChars += getRandomFrom3To9(); // Các ký tự khác đổi thành số ngẫu nhiên từ 3-9
+            }
+        }
+        
+        // Ghép phần cũ (giữ nguyên) với phần mới biến đổi
+        this.value = previousValue + newChars;
+    } 
+    // Nếu người dùng nhấn Xóa (Backspace) thì giữ nguyên chuỗi sau khi xóa
+    else if (currentValue.length < previousValue.length) {
+        this.value = currentValue;
+    }
+
+    // Cập nhật giá trị cũ để chuẩn bị cho lần gõ tiếp theo
+    previousValue = this.value;
+});
 document.getElementById('topLeftIcon').onclick = function() {
     document.getElementById('quizOverlay').classList.add('show');
     quizInput.value = '';
