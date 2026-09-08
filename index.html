@@ -426,16 +426,8 @@ function checkQuizAnswer() {
     // Chấp nhận cả chữ "two" lẫn dạng nhị phân "10"
     if (val === "two" || val === "10") {
         finishQuiz("Well...that's right!\n Maybe you're smarter than I thought...");
-    } else if (!isNaN(val) && val !== "") {
-        const inputNum = parseInt(val);
-        let num;
-        do {
-            num = Math.floor(Math.random() * 100) + 1;
-        } while (num === 2 || num === inputNum);
-        
-        finishQuiz(num.toString());
     } else {
-        finishQuiz("You are an idiot \n 🤣🤣🤣");
+        finishQuiz("You are an idiot! \n 🤣🤣🤣");
     }
 }
 function finishQuiz(message) {
