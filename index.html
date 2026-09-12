@@ -43,9 +43,36 @@
         }
 
         .random-top-left-icon:hover {
-            transform: scale(50);
+            transform: scale(1.30);
+        }
+		/* ICON HỘP QUÀ BIẾT BỎ CHẠY TRƯỢT MƯỢT MÀ */
+        .gift-box-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 2.5rem;
+            z-index: 1000;
+            user-select: none;
+            cursor: pointer;
+            
+            /* TRỌNG TÂM: Tạo hiệu ứng trượt đi (0.35s) snazzy & mượt */
+            transition: left 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.1),
+                        top 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.1),
+                        transform 0.15s ease-out;
         }
 
+        /* Thêm hoạt ảnh rung nhẹ khi chuẩn bị chạy */
+        .gift-box-icon.panic {
+            animation: tremor 0.1s infinite;
+        }
+
+        @keyframes tremor {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-1px, 1px) rotate(-1deg); }
+            50% { transform: translate(1px, -1px) rotate(1deg); }
+            75% { transform: translate(-1px, -1px) rotate(-1deg); }
+            100% { transform: translate(1px, 1px) rotate(0deg); }
+        }
         /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
         .container {
             background: #ffffff;
@@ -323,7 +350,8 @@
 
 <!-- ICON GÓC TRÊN BÊN TRÁI -->
 <div class="random-top-left-icon" id="topLeftIcon" title="bleb bleb, don't click me">💻</div>
-
+<!-- ICON HỘP QUÀ BỎ CHẠY -->
+<div class="gift-box-icon" id="giftBoxIcon" title="catch me if you can">🎁</div>
 <div class="container">
     <h2>My C++ tasks</h2>
     <div class="button-scroll-container" id="buttonList"></div>
@@ -377,7 +405,60 @@
     
     document.getElementById('topLeftIcon').textContent = String.fromCodePoint(randomCodePoint);
 })();
+const giftBox = document.getElementById('giftBoxIcon');
 
+// Đặt vị trí ban đầu dạng pixel tuyệt đối để CSS transition hoạt động tốt nhất
+if (giftBox) {
+    const initRect = giftBox.getBoundingClientRect();
+    giftBox.style.left = initRect.left + 'px';
+    giftBox.style.top = initRect.top + 'px';
+    giftBox.style.bottom = 'auto';
+    giftBox.style.right = 'auto';
+}
+
+document.addEventListener('mousemove', function(e) {
+    if (!giftBox) return;
+
+    const rect = giftBox.getBoundingClientRect();
+    const giftX = rect.left + rect.width / 2;
+    const giftY = rect.top + rect.height / 2;
+
+    // 1. Tính khoảng cách và góc giữa chuột và hộp quà
+    const diffX = giftX - e.clientX;
+    const diffY = giftY - e.clientY;
+    const distance = Math.sqrt(diffX * diffX + diffY * diffY);
+
+    // Bán kính nhạy cảm (120px)
+    const triggerDistance = 120; 
+
+    if (distance < triggerDistance) {
+        // Thêm hiệu ứng hoảng loạn/rung nhẹ khi chuẩn bị chạy mất
+        giftBox.classList.add('panic');
+
+        // 2. Tính lực đẩy & hướng chạy trốn (Tránh xa tầm chuột)
+        // Chuột càng gần, hộp chạy càng xa (Tốc độ tối đa chạy 180px)
+        const fleeStrength = (triggerDistance - distance) + 120; 
+        
+        // Tạo vector hướng bỏ chạy
+        let targetX = giftX + (diffX / (distance || 1)) * fleeStrength;
+        let targetY = giftY + (diffY / (distance || 1)) * fleeStrength;
+
+        // Giới hạn (Boundary) không cho hộp chạy ra ngoài màn hình
+        const margin = 40;
+        const maxX = window.innerWidth - rect.width - margin;
+        const maxY = window.innerHeight - rect.height - margin;
+
+        targetX = Math.max(margin, Math.min(targetX, maxX));
+        targetY = Math.max(margin, Math.min(targetY, maxY));
+
+        // 3. Cho phép trượt
+        giftBox.style.left = targetX - rect.width/2 + 'px';
+        giftBox.style.top = targetY - rect.height/2 + 'px';
+    } else {
+        // Hết hoảng loạn khi chuột ở xa
+        giftBox.classList.remove('panic');
+    }
+});
 // XỬ LÝ SỰ KIỆN CLICK VÀO ICON GÓC TRÊN BÊN TRÁI
 let quizTimerInterval = null;
 let quizTimeLeft = 10;
