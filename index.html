@@ -72,37 +72,37 @@
             100% { transform: translate(1px, 1px) rotate(0deg); }
         }
 
-        /* HIỆU ỨNG PORTAL */
+        /* HIỆU ỨNG PORTAL TELEPORT */
         .portal {
             position: fixed;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: radial-gradient(circle, #00ffff 0%, #8a2be2 70%, transparent 100%);
-            box-shadow: 0 0 15px #00ffff, 0 0 30px #8a2be2;
+            box-shadow: 0 0 20px #00ffff, 0 0 40px #8a2be2;
             z-index: 999;
             pointer-events: none;
             transform: translate(-50%, -50%) scale(0);
-            animation: portalOpen 0.4s forwards ease-out;
+            animation: portalOpen 0.35s forwards ease-out;
         }
 
         @keyframes portalOpen {
             0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) scale(1.2) rotate(360deg); }
+            100% { transform: translate(-50%, -50%) scale(1.3) rotate(360deg); }
         }
 
         .portal-exit {
-            animation: portalClose 0.4s forwards ease-in;
+            animation: portalClose 0.35s forwards ease-in;
         }
 
         @keyframes portalClose {
-            0% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+            0% { transform: translate(-50%, -50%) scale(1.3) rotate(0deg); }
             100% { transform: translate(-50%, -50%) scale(0) rotate(360deg); }
         }
 
         .gift-box-icon.sucking {
             transform: scale(0) rotate(720deg) !important;
-            transition: transform 0.4s ease-in !important;
+            transition: transform 0.35s ease-in !important;
         }
 
         /* ĐẠN DẤU CHẤM */
@@ -137,7 +137,7 @@
             cursor: pointer !important;
         }
 
-        /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
+        /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT (CÁCH 5PX) */
         .bars-container {
             position: fixed;
             width: 17.5px;
@@ -146,8 +146,7 @@
             gap: 2px;
             pointer-events: none;
             z-index: 1002;
-            /* Đã chỉnh translateY xuống 5px dưới con trỏ chuột */
-            transform: translate(-50%, 5px);
+            transform: translate(-50%, 25px);
         }
 
         /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
@@ -210,7 +209,6 @@
             font-size: 1.5rem;
         }
 
-        /* Khung cuộn chứa danh sách nút */
         .button-scroll-container {
             max-height: 75vh;
             overflow-y: auto;
@@ -232,31 +230,6 @@
         .button-scroll-container::-webkit-scrollbar-thumb {
             background: #cbd5e0;
             border-radius: 10px;
-        }
-
-        /* NÚT BẤM GIAO DIỆN CHÍNH */
-        .nav-btn {
-            width: 100%;
-            padding: 16px 24px;
-            border: none;
-            background: #ffffff;
-            color: #4a5568;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            color: #667eea;
-            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.25);
         }
 
         /* MODAL BẬT NỔI & LÀM MỜ NỀN */
@@ -327,15 +300,6 @@
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 20px;
-        }
-
-        .text-display::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .text-display::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 10px;
         }
 
         .copy-btn-modal {
@@ -530,7 +494,7 @@ let isCoolingDown = false;
 let ultEnergy = 0;
 let isParalyzed = false;
 
-// 2. Portal & Né chuột
+// 2. Hàm tạo Portal & Teleport
 function createPortal(x, y) {
     const portal = document.createElement('div');
     portal.className = 'portal';
@@ -541,7 +505,9 @@ function createPortal(x, y) {
 }
 
 function escapeThroughPortal(currentRect) {
+    if (isTeleporting) return;
     isTeleporting = true;
+
     const giftCenterX = currentRect.left + currentRect.width / 2;
     const giftCenterY = currentRect.top + currentRect.height / 2;
     const entryPortal = createPortal(giftCenterX, giftCenterY);
@@ -549,14 +515,14 @@ function escapeThroughPortal(currentRect) {
     giftBox.classList.add('sucking');
 
     setTimeout(() => {
-        const margin = 80;
+        const margin = 100;
         const maxX = window.innerWidth - currentRect.width - margin;
         const maxY = window.innerHeight - currentRect.height - margin;
         const newX = Math.floor(Math.random() * (maxX - margin)) + margin;
         const newY = Math.floor(Math.random() * (maxY - margin)) + margin;
 
         entryPortal.classList.add('portal-exit');
-        setTimeout(() => entryPortal.remove(), 400);
+        setTimeout(() => entryPortal.remove(), 350);
 
         const exitPortal = createPortal(newX + currentRect.width / 2, newY + currentRect.height / 2);
         giftBox.style.left = newX + 'px';
@@ -568,13 +534,13 @@ function escapeThroughPortal(currentRect) {
             setTimeout(() => {
                 exitPortal.remove();
                 isTeleporting = false;
-            }, 400);
+            }, 350);
         }, 100);
 
-    }, 400);
+    }, 350);
 }
 
-// 3. Sự kiện chuột
+// 3. Xử lý di chuyển chuột và né tránh
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
@@ -593,29 +559,28 @@ document.addEventListener('mousemove', function(e) {
     const diffX = giftX - mouseX;
     const diffY = giftY - mouseY;
     const distance = Math.sqrt(diffX * diffX + diffY * diffY);
-    const triggerDistance = 120;
+    const triggerDistance = 130;
 
     if (distance < triggerDistance) {
         giftBox.classList.add('panic');
-        const margin = 30; // Khoảng cách tới viền màn hình
+        const margin = 20; 
         const maxRight = window.innerWidth - rect.width - margin;
         const maxBottom = window.innerHeight - rect.height - margin;
 
-        // KIỂM TRA BỊ DỒN VÀO BẤT KỲ GÓC/MÉP MÀN HÌNH NÀO
-        const isNearLeft = rect.left <= margin + 15;
-        const isNearRight = rect.left >= maxRight - 15;
-        const isNearTop = rect.top <= margin + 15;
-        const isNearBottom = rect.top >= maxBottom - 15;
+        // KIỂM TRA CHẠM BẤT KỲ MÉP / GÓC NÀO CỦA MÀN HÌNH
+        const isNearLeft = rect.left <= margin + 25;
+        const isNearRight = rect.left >= maxRight - 25;
+        const isNearTop = rect.top <= margin + 25;
+        const isNearBottom = rect.top >= maxBottom - 25;
 
-        // Nếu chạm vào mép/góc và bị chuột ép sát
-        const isTrapped = (isNearLeft || isNearRight) && (isNearTop || isNearBottom);
+        const isTrapped = isNearLeft || isNearRight || isNearTop || isNearBottom;
 
         if (isTrapped) {
             if (!trappedTimer) {
                 trappedTimer = setTimeout(() => {
                     escapeThroughPortal(rect);
                     trappedTimer = null;
-                }, 600); // Giảm thời gian chờ xuống 0.6s để nhạy hơn ở mọi góc
+                }, 200); // 200ms để kích hoạt portal nhanh chóng
             }
         } else if (trappedTimer) {
             clearTimeout(trappedTimer);
@@ -640,7 +605,7 @@ document.addEventListener('mousemove', function(e) {
     }
 });
 
-// 4. Sự kiện nhấn phím
+// 4. Sự kiện phím
 document.addEventListener('keydown', function(e) {
     if (e.altKey && (e.key === '.' || e.code === 'Period')) {
         e.preventDefault();
@@ -712,7 +677,7 @@ function shootDotBullet() {
     }, 3000);
 }
 
-// 6. Chiêu Kết Liễu
+// 6. Tuyệt chiêu
 function executeUltimateAttack() {
     ultEnergy = 0;
     ultFill.style.width = '0%';
@@ -745,7 +710,6 @@ function executeUltimateAttack() {
     }, 200);
 }
 
-// Click vào hộp quà sau khi kết liễu
 if (giftBox) {
     giftBox.addEventListener('click', function() {
         if (isParalyzed) {
