@@ -886,43 +886,32 @@ int main() {
 	cout << ans;
 	return 0;
 }`, 
-`#include<bits/stdc++.h>
+`#include <bits/stdc++.h>
+#define int long long
 using namespace std;
 const int max_val = 200005;
-int cntl[max_val] = {0};
-int cntr[max_val] = {0};
-long long bleb(long long t) {
-	long long ans1 = 0;
-	for (int x = -100000; x <= 100000; x++) {
-		int cntx = cntl[x + 100000];
-		if (cntx == 0) continue;
-		long long z = t - x;
-		if (z >= -100000 && z <= 100000) {
-			int cntz = cntr[z + 100000];
-			ans1 += (long long)cntx * cntz;
-		}
-	}
-	return ans1;
-}
-int main() {
+int cnt[max_val] = {0};
+signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	freopen("CNTP2.INP", "r", stdin);
 	freopen("CNTP2.OUT", "w", stdout);
-	int n;
-	long long k;
+	int n, k;
 	cin >> n >> k;
-	vector<long long> a(n);
+	vector<int> a(n);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
-		cntr[a[i] + 100000]++;
 	}
 	long long ans = 0;
 	for (int y = 0; y < n; y++) {
-		cntr[a[y] + 100000]--;
-		long long t = k - a[y];
-		ans += bleb(t);
-		cntl[a[y] + 100000]++;
+		for (int z = y + 1; z < n; z++) {
+			int t_ax = k - a[y] - a[z];
+			int idx = t_ax + 100000;
+			if (idx >= 0 && idx < max_val) {
+				ans += cnt[idx];
+			}
+		}
+		cnt[a[y] + 100000]++;
 	}
 	cout << ans;
 	return 0;
@@ -945,7 +934,7 @@ int main() {
 	}
 	long long ans = 0;
 	for(int i = 0; i < n; i++) {
-		long long t = k + a[i];
+		long long t = a[i] - k;
 		if (t >= -100000 && t <= 100000) {
 			ans += cnt[t + 100000];
 		}
@@ -953,7 +942,8 @@ int main() {
 	}
 	cout << ans;
 	return 0;
-}`, 
+}
+`, 
 `#include<bits/stdc++.h>
 using namespace std;
 const int max_val = 100005;
@@ -1179,7 +1169,42 @@ signed main() {
 	}
 	return 0;
 }`, 
-`Not available yet...`, 
+`#include <bits/stdc++.h>
+#define int long long
+using namespace std;
+const int maxn = 5005;
+int a[maxn];
+int c[maxn] = {0};
+int cnt[4000005] = {0};
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("STRPL.INP", "r", stdin);
+	freopen("STRPL.OUT", "w", stdout);
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+	}
+	for (int j = 1; j <= n; j++) {
+		for (int x = j + 1; x <= n; x++) {
+			int target_idx = a[x] - a[j] + 2000000;
+			if (target_idx >= 0 && target_idx <= 4000000) {
+				c[x] += cnt[target_idx];
+			}
+		}
+		for (int i = 1; i < j; i++) {
+			int sum_idx = a[i] + a[j] + 2000000;
+			if (sum_idx >= 0 && sum_idx <= 4000000) {
+				cnt[sum_idx]++;
+			}
+		}
+	}
+	for (int x = 1; x <= n; x++) {
+		cout << c[x] << " ";
+	}
+	return 0;
+}`, 
 `Not available yet...`,
 `Not available yet...`, 
 `Not available yet...`, 
