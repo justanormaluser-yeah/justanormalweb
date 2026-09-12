@@ -45,7 +45,8 @@
         .random-top-left-icon:hover {
             transform: scale(1.30);
         }
-		/* ICON HỘP QUÀ BIẾT BỎ CHẠY TRƯỢT MƯỢT MÀ */
+
+        /* ICON HỘP QUÀ BIẾT BỎ CHẠY TRƯỢT MƯỢT MÀ */
         .gift-box-icon {
             position: fixed;
             bottom: 30px;
@@ -54,14 +55,11 @@
             z-index: 1000;
             user-select: none;
             cursor: pointer;
-            
-            /* TRỌNG TÂM: Tạo hiệu ứng trượt đi (0.35s) snazzy & mượt */
             transition: left 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.1),
                         top 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.1),
                         transform 0.15s ease-out;
         }
 
-        /* Thêm hoạt ảnh rung nhẹ khi chuẩn bị chạy */
         .gift-box-icon.panic {
             animation: tremor 0.1s infinite;
         }
@@ -73,117 +71,120 @@
             75% { transform: translate(-1px, -1px) rotate(-1deg); }
             100% { transform: translate(1px, 1px) rotate(0deg); }
         }
-		/* HIỆU ỨNG CỔNG KHÔNG GIAN (PORTAL) */
-		.portal {
-		    position: fixed;
-		    width: 60px;
-		    height: 60px;
-		    border-radius: 50%;
-		    background: radial-gradient(circle, #00ffff 0%, #8a2be2 70%, transparent 100%);
-		  	box-shadow: 0 0 15px #00ffff, 0 0 30px #8a2be2;
-		    z-index: 999;
-	    	pointer-events: none;
-	    	transform: translate(-50%, -50%) scale(0);
-	    	animation: portalOpen 0.4s forwards ease-out;
-		}
 
-		@keyframes portalOpen {
-	    	0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
-	    	100% { transform: translate(-50%, -50%) scale(1.2) rotate(360deg); }
-		}
+        /* HIỆU ỨNG CỔNG KHÔNG GIAN (PORTAL) */
+        .portal {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ffff 0%, #8a2be2 70%, transparent 100%);
+            box-shadow: 0 0 15px #00ffff, 0 0 30px #8a2be2;
+            z-index: 999;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            animation: portalOpen 0.4s forwards ease-out;
+        }
 
-		.portal-exit {
-		    animation: portalClose 0.4s forwards ease-in;
-		}
+        @keyframes portalOpen {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) scale(1.2) rotate(360deg); }
+        }
 
-		@keyframes portalClose {
-		    0% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
-		    100% { transform: translate(-50%, -50%) scale(0) rotate(360deg); }
-		}
+        .portal-exit {
+            animation: portalClose 0.4s forwards ease-in;
+        }
 
-		/* Hiệu ứng chui vào cổng */
-		.gift-box-icon.sucking {
-		    transform: scale(0) rotate(720deg) !important;
-		    transition: transform 0.4s ease-in !important;
-		}
-		/* ĐẠN DẤU CHẤM BẮN RA TỪ CHUỘT */
-.dot-bullet {
-    position: fixed;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #ff3366;
-    text-shadow: 0 0 10px #ff3366, 0 0 20px #ff0055;
-    pointer-events: none;
-    z-index: 1001;
-    transform: translate(-50%, -50%);
-    transition: left 0.25s linear, top 0.25s linear;
-}
+        @keyframes portalClose {
+            0% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) scale(0) rotate(360deg); }
+        }
 
-/* HIỆU ỨNG HỘP QUÀ BỊ ĐÓNG BẰNG / GIỮ CHÂN 1S */
-.gift-box-icon.frozen {
-    filter: drop-shadow(0 0 15px #00d2ff) brightness(1.2);
-    animation: freezeShake 0.1s infinite !important;
-}
+        .gift-box-icon.sucking {
+            transform: scale(0) rotate(720deg) !important;
+            transition: transform 0.4s ease-in !important;
+        }
 
-@keyframes freezeShake {
-    0% { transform: translate(1px, 1px); }
-    50% { transform: translate(-1px, -1px); }
-    100% { transform: translate(1px, -1px); }
-}
-			/* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
-.bars-container {
-    position: fixed;
-    width: 70px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    pointer-events: none;
-    z-index: 1002;
-    transform: translate(-50%, 15px); /* Nằm ngay dưới con trỏ chuột */
-}
+        /* ĐẠN DẤU CHẤM BẮN RA TỪ CHUỘT */
+        .dot-bullet {
+            position: fixed;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff3366;
+            text-shadow: 0 0 10px #ff3366, 0 0 20px #ff0055;
+            pointer-events: none;
+            z-index: 1001;
+            transform: translate(-50%, -50%);
+            transition: left 0.25s linear, top 0.25s linear;
+        }
 
-/* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
-.ult-bar-box {
-    width: 100%;
-    height: 6px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 215, 0, 0.8);
-    border-radius: 3px;
-    overflow: hidden;
-}
+        /* HIỆU ỨNG HỘP QUÀ BỊ ĐÓNG BẰNG */
+        .gift-box-icon.frozen {
+            filter: drop-shadow(0 0 15px #00d2ff) brightness(1.2);
+            animation: freezeShake 0.1s infinite !important;
+        }
 
-.ult-bar-fill {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #ffaa00, #00ffff);
-    transition: width 0.2s ease-out;
-}
+        @keyframes freezeShake {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, -1px); }
+        }
 
-.ult-bar-box.ready {
-    animation: ultGlow 0.5s infinite alternate;
-}
+        /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
+        .bars-container {
+            position: fixed;
+            width: 70px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            pointer-events: none;
+            z-index: 1002;
+            transform: translate(-50%, 15px);
+        }
 
-@keyframes ultGlow {
-    from { border-color: #00ffff; box-shadow: 0 0 5px #00ffff; }
-    to { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
-}
+        /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
+        .ult-bar-box {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.8);
+            border-radius: 3px;
+            overflow: hidden;
+        }
 
-/* THANH HỒI CHIÊU (Ở DƯỚI) */
-.cooldown-bar-box {
-    width: 100%;
-    height: 5px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 3px;
-    overflow: hidden;
-}
+        .ult-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ffaa00, #00ffff);
+            transition: width 0.2s ease-out;
+        }
 
-.cooldown-bar-fill {
-    width: 0%;
-    height: 100%;
-    background: #ff3366;
-    transition: width 3s linear; /* Hồi chiêu 3s */
-}
+        .ult-bar-box.ready {
+            animation: ultGlow 0.5s infinite alternate;
+        }
+
+        @keyframes ultGlow {
+            from { border-color: #00ffff; box-shadow: 0 0 5px #00ffff; }
+            to { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
+        }
+
+        /* THANH HỒI CHIÊU (Ở DƯỚI) */
+        .cooldown-bar-box {
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .cooldown-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: #ff3366;
+            transition: width 3s linear;
+        }
+
         /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
         .container {
             background: #ffffff;
@@ -201,7 +202,6 @@
             font-size: 1.5rem;
         }
 
-        /* Khung cuộn chứa danh sách nút */
         .button-scroll-container {
             max-height: 75vh;
             overflow-y: auto;
@@ -211,144 +211,75 @@
             gap: 12px;
         }
 
-        .button-scroll-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .button-scroll-container::-webkit-scrollbar-track {
-            background: #edf2f7;
-            border-radius: 10px;
-        }
-
-        .button-scroll-container::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 10px;
-        }
-
-        /* Nút bấm trải rộng 100% chiều ngang */
-        .nav-btn {
-            width: 100%;
-            padding: 16px 24px;
-            border: none;
-            background: #ffffff;
-            color: #4a5568;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            color: #667eea;
-            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.25);
-        }
-
-        /* MODAL BẬT NỔI & LÀM MỜ NỀN */
-        .modal-overlay {
+        /* MODAL CÂU ĐỐ & KẾT QUẢ */
+        .quiz-overlay, .result-overlay, .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
         }
 
-        .modal-overlay.show {
+        .quiz-overlay.show, .result-overlay.show, .modal-overlay.show {
             display: flex;
         }
 
-        /* CẤU HÌNH Ô POPUP DÀI HƠN */
-        .modal-content {
+        .quiz-box, .result-box {
             background: #ffffff;
-            width: 90%;
-            max-width: 1080px;
-            height: 80vh;
-            max-height: 920px;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            padding: 25px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
+        .quiz-timer {
             font-size: 1.8rem;
-            color: #a0aec0;
-            cursor: pointer;
-        }
-
-        .modal-close:hover {
+            font-weight: bold;
             color: #e53e3e;
+            margin: 10px 0;
         }
 
-        .modal-title {
-            color: #2d3748;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-        }
-
-        /* VÙNG VĂN BẢN CUỘN BÊN TRONG POPUP */
-        .text-display {
-            color: #4a5568;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            white-space: pre;
-            font-family: 'Consolas', 'Courier New', monospace;
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .text-display::-webkit-scrollbar {
-            width: 6px;
-        }
-        .text-display::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 10px;
-        }
-
-        .copy-btn-modal {
+        .quiz-input {
             width: 100%;
-            background: #38a169;
+            padding: 10px;
+            margin: 15px 0;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+        }
+
+        .quiz-btn {
+            width: 100%;
+            padding: 10px;
+            background: #4299e1;
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
-            flex-shrink: 0;
         }
 
-        .copy-btn-modal:hover {
-            background: #2f855a;
+        .quiz-btn:hover {
+            background: #3182ce;
         }
 
-        /* Toast thông báo */
+        .result-message {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+        }
+
         .toast {
             position: fixed;
             top: 20px;
@@ -367,102 +298,29 @@
         .toast.show {
             opacity: 1;
         }
-
-        /* STYLES CHO HỘP CÂU ĐỐ ICON */
-        .quiz-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .quiz-overlay.show {
-            display: flex;
-        }
-        .quiz-box {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 16px;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .quiz-timer {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #e53e3e;
-            margin: 10px 0;
-        }
-        .quiz-input {
-            width: 100%;
-            padding: 10px;
-            margin: 15px 0;
-            border: 2px solid #cbd5e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            text-align: center;
-            outline: none;
-        }
-        .quiz-btn {
-            width: 100%;
-            padding: 10px;
-            background: #4299e1;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .quiz-btn:hover {
-            background: #3182ce;
-        }
-
-        /* POPUP KẾT QUẢ CÂU ĐỐ THAY THẾ ALERT */
-        .result-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-        .result-overlay.show {
-            display: flex;
-        }
-        .result-box {
-            background: #ffffff;
-            padding: 25px 30px;
-            border-radius: 16px;
-            width: 300px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .result-message {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 20px;
-            word-wrap: break-word;
-        }
     </style>
 </head>
 <body>
 
 <!-- ICON GÓC TRÊN BÊN TRÁI -->
 <div class="random-top-left-icon" id="topLeftIcon" title="bleb bleb, don't click me">💻</div>
+
 <!-- ICON HỘP QUÀ BỎ CHẠY -->
 <div class="gift-box-icon" id="giftBoxIcon" title="catch me if you can">🎁</div>
+
+<!-- CỤM 2 THANH ĐI THEO CHUỘT -->
+<div class="bars-container" id="barsContainer">
+    <!-- Thanh Tích (ở trên) -->
+    <div class="ult-bar-box" id="ultBox" title="Thanh Tích Chiêu">
+        <div class="ult-bar-fill" id="ultFill"></div>
+    </div>
+    
+    <!-- Thanh Hồi Chiêu (ở dưới, ban đầu ẩn) -->
+    <div class="cooldown-bar-box" id="cooldownBox" style="display: none;">
+        <div class="cooldown-bar-fill" id="cooldownFill"></div>
+    </div>
+</div>
+
 <div class="container">
     <h2>My C++ tasks</h2>
     <div class="button-scroll-container" id="buttonList"></div>
@@ -478,7 +336,7 @@
     </div>
 </div>
 
-<!-- MODAL KẾT QUẢ CÂU ĐỐ (THAY CHO ALERT TRÌNH DUYỆT) -->
+<!-- MODAL KẾT QUẢ CÂU ĐỐ -->
 <div class="result-overlay" id="resultOverlay">
     <div class="result-box">
         <div class="result-message" id="resultMessage"></div>
@@ -486,39 +344,28 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeModal()">&times;</button>
-        <h3 class="modal-title" id="modalTitle">Tiêu đề mục</h3>
-        <div id="text-display" class="text-display"></div>
-        <button class="copy-btn-modal" onclick="copyContentFromModal()">📋 Copy</button>
-    </div>
-</div>
-
 <div id="toast" class="toast">Copied!</div>
 
 <script>
-// 0. Tạo icon ngẫu nhiên từ kho biểu tượng có sẵn trên máy tính người dùng (GIỮ NGUYÊN)
+// 1. Khởi tạo Icon ngẫu nhiên góc trái
 (function generateRandomSystemIcon() {
     const symbolRanges = [
-        [0x2300, 0x23FF],
-        [0x2600, 0x26FF],
-        [0x2700, 0x27BF],
-        [0x1F300, 0x1F5FF],
-        [0x1F600, 0x1F64F],
-        [0x1F680, 0x1F6FF],
-        [0x1F900, 0x1F9FF],
-        [0x1FA70, 0x1FAFF]
+        [0x2300, 0x23FF], [0x2600, 0x26FF], [0x2700, 0x27BF],
+        [0x1F300, 0x1F5FF], [0x1F600, 0x1F64F], [0x1F680, 0x1F6FF],
+        [0x1F900, 0x1F9FF], [0x1FA70, 0x1FAFF]
     ];
-
     const range = symbolRanges[Math.floor(Math.random() * symbolRanges.length)];
     const randomCodePoint = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
-    
     document.getElementById('topLeftIcon').textContent = String.fromCodePoint(randomCodePoint);
 })();
-const giftBox = document.getElementById('giftBoxIcon');
 
-// Khởi tạo vị trí
+const giftBox = document.getElementById('giftBoxIcon');
+const barsContainer = document.getElementById('barsContainer');
+const ultFill = document.getElementById('ultFill');
+const ultBox = document.getElementById('ultBox');
+const cooldownBox = document.getElementById('cooldownBox');
+const cooldownFill = document.getElementById('cooldownFill');
+
 if (giftBox) {
     const initRect = giftBox.getBoundingClientRect();
     giftBox.style.left = initRect.left + 'px';
@@ -529,8 +376,14 @@ if (giftBox) {
 
 let trappedTimer = null;
 let isTeleporting = false;
+let mouseX = 0;
+let mouseY = 0;
+let isFrozen = false;
+let isCoolingDown = false;
+let ultEnergy = 0;
+let isParalyzed = false;
 
-// Hàm tạo Cổng không gian
+// 2. Hàm Portal & Né chuột
 function createPortal(x, y) {
     const portal = document.createElement('div');
     portal.className = 'portal';
@@ -540,37 +393,28 @@ function createPortal(x, y) {
     return portal;
 }
 
-// Hàm xử lý nhảy qua Portal sang vị trí mới
 function escapeThroughPortal(currentRect) {
     isTeleporting = true;
-    
-    // 1. Tạo Portal tại vị trí bị kẹt
     const giftCenterX = currentRect.left + currentRect.width / 2;
     const giftCenterY = currentRect.top + currentRect.height / 2;
     const entryPortal = createPortal(giftCenterX, giftCenterY);
 
-    // 2. Thu nhỏ hộp quà chui vào portal
     giftBox.classList.add('sucking');
 
     setTimeout(() => {
-        // Tọa độ ngẫu nhiên mới an toàn ở giữa màn hình
         const margin = 80;
         const maxX = window.innerWidth - currentRect.width - margin;
         const maxY = window.innerHeight - currentRect.height - margin;
         const newX = Math.floor(Math.random() * (maxX - margin)) + margin;
         const newY = Math.floor(Math.random() * (maxY - margin)) + margin;
 
-        // 3. Đóng Portal cũ, tạo Portal mới ở điểm đến
         entryPortal.classList.add('portal-exit');
         setTimeout(() => entryPortal.remove(), 400);
 
         const exitPortal = createPortal(newX + currentRect.width / 2, newY + currentRect.height / 2);
-
-        // Đặt hộp quà sang vị trí mới
         giftBox.style.left = newX + 'px';
         giftBox.style.top = newY + 'px';
 
-        // 4. Hộp quà chui ra khỏi Portal mới
         setTimeout(() => {
             giftBox.classList.remove('sucking');
             exitPortal.classList.add('portal-exit');
@@ -580,50 +424,51 @@ function escapeThroughPortal(currentRect) {
             }, 400);
         }, 100);
 
-    }, 400); // Thời gian chui vào cổng
+    }, 400);
 }
 
+// 3. Sự kiện di chuyển chuột (Di chuyển 2 thanh & Hộp quà né chuột)
 document.addEventListener('mousemove', function(e) {
-    if (!giftBox || isTeleporting) return;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    if (barsContainer) {
+        barsContainer.style.left = mouseX + 'px';
+        barsContainer.style.top = mouseY + 'px';
+    }
+
+    if (!giftBox || isTeleporting || isFrozen) return;
 
     const rect = giftBox.getBoundingClientRect();
     const giftX = rect.left + rect.width / 2;
     const giftY = rect.top + rect.height / 2;
 
-    const diffX = giftX - e.clientX;
-    const diffY = giftY - e.clientY;
+    const diffX = giftX - mouseX;
+    const diffY = giftY - mouseY;
     const distance = Math.sqrt(diffX * diffX + diffY * diffY);
-
     const triggerDistance = 120;
 
     if (distance < triggerDistance) {
         giftBox.classList.add('panic');
-
         const margin = 40;
         const maxX = window.innerWidth - rect.width - margin;
         const maxY = window.innerHeight - rect.height - margin;
 
-        // Kiểm tra xem có bị dồn sát góc/mép tường không
         const isTrapped = (rect.left <= margin + 10 || rect.left >= maxX - 10 || 
                            rect.top <= margin + 10 || rect.top >= maxY - 10);
 
-        // NẾU BỊ DỒN VÀO GÓC: Đếm đủ 1 giây (1000ms) sẽ kích hoạt Portal
         if (isTrapped) {
             if (!trappedTimer) {
                 trappedTimer = setTimeout(() => {
                     escapeThroughPortal(rect);
                     trappedTimer = null;
-                }, 1000); // Đếm đúng 1s
+                }, 1000);
             }
-        } else {
-            // Nếu thoát ra khỏi mép tường thì reset bộ đếm
-            if (trappedTimer) {
-                clearTimeout(trappedTimer);
-                trappedTimer = null;
-            }
+        } else if (trappedTimer) {
+            clearTimeout(trappedTimer);
+            trappedTimer = null;
         }
 
-        // Né bình thường
         const fleeStrength = (triggerDistance - distance) + 120;
         let targetX = giftX + (diffX / (distance || 1)) * fleeStrength;
         let targetY = giftY + (diffY / (distance || 1)) * fleeStrength;
@@ -641,33 +486,9 @@ document.addEventListener('mousemove', function(e) {
         }
     }
 });
-let mouseX = 0;
-let mouseY = 0;
-let isFrozen = false;
-let isCoolingDown = false;
-let ultEnergy = 0; // Tích đủ 20 phát
-let isParalyzed = false;
 
-const barsContainer = document.getElementById('barsContainer');
-const ultFill = document.getElementById('ultFill');
-const ultBox = document.getElementById('ultBox');
-const cooldownBox = document.getElementById('cooldownBox');
-const cooldownFill = document.getElementById('cooldownFill');
-
-// 1. Cụm 2 thanh LUÔN LUÔN đi theo con trỏ chuột
-document.addEventListener('mousemove', function(e) {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    if (barsContainer) {
-        barsContainer.style.left = mouseX + 'px';
-        barsContainer.style.top = mouseY + 'px';
-    }
-});
-
-// 2. Lắng nghe gõ phím
+// 4. Lắng nghe phím bắn đạn (.) & Chiêu cuối (Alt + .)
 document.addEventListener('keydown', function(e) {
-    // Tổ hợp Alt + . (Chiêu kết liễu)
     if (e.altKey && (e.key === '.' || e.code === 'Period')) {
         e.preventDefault();
         if (ultEnergy >= 20 && !isParalyzed) {
@@ -676,38 +497,37 @@ document.addEventListener('keydown', function(e) {
         return;
     }
 
-    // Phím '.' bắn đạn
     if (e.key === '.' && giftBox && !isFrozen && !isCoolingDown && !isParalyzed) {
         shootDotBullet();
     }
 });
 
-// 3. Xử lý Bắn đạn, Tích năng lượng và Hồi chiêu 3s
+// 5. Xử lý Bắn đạn, Thanh Hồi Chiêu & Thanh Tích Năng Lượng
 function shootDotBullet() {
     isCoolingDown = true;
 
-    // --- XỬ LÝ THANH HỒI CHIÊU (Ở DƯỚI) ---
-    cooldownBox.style.display = 'block'; // Hiện thanh dưới
+    // Thanh hồi chiêu dưới hiện ra
+    cooldownBox.style.display = 'block';
     cooldownFill.style.transition = 'none';
     cooldownFill.style.width = '0%';
 
     requestAnimationFrame(() => {
         cooldownFill.style.transition = 'width 3s linear';
-        cooldownFill.style.width = '100%'; // Chạy đầy trong 3s
+        cooldownFill.style.width = '100%';
     });
 
-    // --- XỬ LÝ THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) ---
+    // Tích năng lượng cho thanh trên
     if (ultEnergy < 20) {
         ultEnergy++;
         const percent = (ultEnergy / 20) * 100;
         ultFill.style.width = percent + '%';
 
         if (ultEnergy === 20) {
-            ultBox.classList.add('ready'); // Đầy 100% thì phát sáng
+            ultBox.classList.add('ready');
         }
     }
 
-    // --- BẮN ĐẠN DẤU CHẤM TRÚNG HỘP QUÀ ---
+    // Bắn đạn
     const rect = giftBox.getBoundingClientRect();
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
@@ -736,14 +556,14 @@ function shootDotBullet() {
         }, 1000);
     }, 250);
 
-    // --- SAU 3 GIÂY: HỒI CHIÊU XONG -> THANH DƯỚI BIẾN MẤT ---
+    // Sau 3s: Hồi chiêu xong -> Thanh dưới tự biến mất
     setTimeout(() => {
         isCoolingDown = false;
-        cooldownBox.style.display = 'none'; // Ẩn thanh dưới đi
+        cooldownBox.style.display = 'none';
     }, 3000);
 }
 
-// 4. Chiêu Kết Liễu (Alt + .)
+// 6. Chiêu Kết Liễu
 function executeUltimateAttack() {
     ultEnergy = 0;
     ultFill.style.width = '0%';
@@ -772,11 +592,10 @@ function executeUltimateAttack() {
         ultBeam.remove();
         isParalyzed = true;
         giftBox.classList.remove('panic', 'frozen');
-        giftBox.classList.add('paralyzed');
+        giftBox.style.opacity = '0.5';
     }, 200);
 }
 
-// 5. Mở hộp quà khi bị kết liễu
 if (giftBox) {
     giftBox.addEventListener('click', function() {
         if (isParalyzed) {
@@ -784,84 +603,30 @@ if (giftBox) {
         }
     });
 }
-// 2. Bắt sự kiện nhấn phím dấu chấm '.'
-document.addEventListener('keydown', function(e) {
-    // Kiểm tra xem người dùng có gõ phím '.' hay không (KeyNumpadDecimal hoặc Period)
-    if (e.key === '.' && giftBox && !isFrozen) {
-        shootDotBullet();
-    }
-});
-document.addEventListener('mousemove', function(e) {
-    // Nếu hộp quà đang bị đóng băng hoặc đang chuyển giao Portal thì DỪNG NÉ
-    if (!giftBox || isTeleporting || isFrozen) return;
 
-    // ... (Giữ nguyên toàn bộ đoạn logic né chuột và Portal phía dưới)
-});
-// 3. Hàm xử lý bắn đạn dấu chấm từ chuột đến hộp quà
-function shootDotBullet() {
-    const rect = giftBox.getBoundingClientRect();
-    const targetX = rect.left + rect.width / 2;
-    const targetY = rect.top + rect.height / 2;
-
-    // Tạo viên đạn dấu chấm ngay tại vị trí con trỏ chuột
-    const bullet = document.createElement('div');
-    bullet.className = 'dot-bullet';
-    bullet.innerText = '•';
-    bullet.style.left = mouseX + 'px';
-    bullet.style.top = mouseY + 'px';
-    document.body.appendChild(bullet);
-
-    // Bắn viên đạn bay tới vị trí hộp quà
-    requestAnimationFrame(() => {
-        bullet.style.left = targetX + 'px';
-        bullet.style.top = targetY + 'px';
-    });
-
-    // Khi đạn bay tới nơi (sau 250ms) -> Trúng đích & Giữ chân hộp quà 1 giây
-    setTimeout(() => {
-        bullet.remove(); // Xóa viên đạn
-        
-        // Đóng băng hộp quà
-        isFrozen = true;
-        giftBox.classList.remove('panic');
-        giftBox.classList.add('frozen');
-
-        // Sau 1 giây (1000ms) giải phóng hộp quà
-        setTimeout(() => {
-            isFrozen = false;
-            giftBox.classList.remove('frozen');
-        }, 1000);
-
-    }, 250);
-}
-// XỬ LÝ SỰ KIỆN CLICK VÀO ICON GÓC TRÊN BÊN TRÁI
+// 7. Logic Modal Câu đố góc trái
 let quizTimerInterval = null;
 let quizTimeLeft = 10;
 const quizInput = document.getElementById('quizInput');
 
-// 1. HÀM TẠO SỐ NGẪU NHIÊN TỪ 3 ĐẾN 9 (TUỆT ĐỐI KHÔNG CÓ 2)
 function getRandomFrom3To9() {
     const validDigits = ['3', '4', '5', '6', '7', '8', '9'];
     return validDigits[Math.floor(Math.random() * validDigits.length)];
 }
 
-// 2. XỬ LÝ SỰ KIỆN INPUT: CHỈ GIỮ 0 VÀ 1, MỌI KÝ TỰ KHÁC LẬP TỨC ĐỔI THÀNH SỐ (3-9)
 quizInput.addEventListener('input', function() {
     let result = '';
     for (let i = 0; i < this.value.length; i++) {
         let char = this.value[i];
-        
-        // Nếu là '0' hoặc '1', hoặc là số từ '3' đến '9' đã được tạo trước đó -> GIỮ NGUYÊN
         if (char === '0' || char === '1' || (char >= '3' && char <= '9')) {
             result += char;
-        } 
-        // Bất kỳ ký tự nào khác (kể cả số 2, chữ cái, ký tự đặc biệt...) -> ĐỔI THÀNH (3-9)
-        else {
+        } else {
             result += getRandomFrom3To9();
         }
     }
     this.value = result;
 });
+
 document.getElementById('topLeftIcon').onclick = function() {
     document.getElementById('quizOverlay').classList.add('show');
     quizInput.value = '';
@@ -882,14 +647,13 @@ document.getElementById('topLeftIcon').onclick = function() {
 
 function checkQuizAnswer() {
     const val = quizInput.value.trim().toLowerCase();
-    
-    // Chấp nhận cả chữ "two" lẫn dạng nhị phân "10"
     if (val === "two" || val === "10") {
         finishQuiz("Well...that's right!\n Maybe you're smarter than I thought...");
     } else {
         finishQuiz("You are an idiot! \n 🤣🤣🤣");
     }
 }
+
 function finishQuiz(message) {
     clearInterval(quizTimerInterval);
     document.getElementById('quizOverlay').classList.remove('show');
