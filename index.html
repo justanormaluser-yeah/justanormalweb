@@ -73,6 +73,63 @@
             75% { transform: translate(-1px, -1px) rotate(-1deg); }
             100% { transform: translate(1px, 1px) rotate(0deg); }
         }
+		/* HIỆU ỨNG CỔNG KHÔNG GIAN (PORTAL) */
+		.portal {
+		    position: fixed;
+		    width: 60px;
+		    height: 60px;
+		    border-radius: 50%;
+		    background: radial-gradient(circle, #00ffff 0%, #8a2be2 70%, transparent 100%);
+		  	box-shadow: 0 0 15px #00ffff, 0 0 30px #8a2be2;
+		    z-index: 999;
+	    	pointer-events: none;
+	    	transform: translate(-50%, -50%) scale(0);
+	    	animation: portalOpen 0.4s forwards ease-out;
+		}
+
+		@keyframes portalOpen {
+	    	0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+	    	100% { transform: translate(-50%, -50%) scale(1.2) rotate(360deg); }
+		}
+
+		.portal-exit {
+		    animation: portalClose 0.4s forwards ease-in;
+		}
+
+		@keyframes portalClose {
+		    0% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+		    100% { transform: translate(-50%, -50%) scale(0) rotate(360deg); }
+		}
+
+		/* Hiệu ứng chui vào cổng */
+		.gift-box-icon.sucking {
+		    transform: scale(0) rotate(720deg) !important;
+		    transition: transform 0.4s ease-in !important;
+		}
+		/* ĐẠN DẤU CHẤM BẮN RA TỪ CHUỘT */
+.dot-bullet {
+    position: fixed;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff3366;
+    text-shadow: 0 0 10px #ff3366, 0 0 20px #ff0055;
+    pointer-events: none;
+    z-index: 1001;
+    transform: translate(-50%, -50%);
+    transition: left 0.25s linear, top 0.25s linear;
+}
+
+/* HIỆU ỨNG HỘP QUÀ BỊ ĐÓNG BẰNG / GIỮ CHÂN 1S */
+.gift-box-icon.frozen {
+    filter: drop-shadow(0 0 15px #00d2ff) brightness(1.2);
+    animation: freezeShake 0.1s infinite !important;
+}
+
+@keyframes freezeShake {
+    0% { transform: translate(1px, 1px); }
+    50% { transform: translate(-1px, -1px); }
+    100% { transform: translate(1px, -1px); }
+}
         /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
         .container {
             background: #ffffff;
@@ -407,7 +464,7 @@
 })();
 const giftBox = document.getElementById('giftBoxIcon');
 
-// Đặt vị trí ban đầu dạng pixel tuyệt đối để CSS transition hoạt động tốt nhất
+// Khởi tạo vị trí
 if (giftBox) {
     const initRect = giftBox.getBoundingClientRect();
     giftBox.style.left = initRect.left + 'px';
@@ -416,49 +473,180 @@ if (giftBox) {
     giftBox.style.right = 'auto';
 }
 
+let trappedTimer = null;
+let isTeleporting = false;
+
+// Hàm tạo Cổng không gian
+function createPortal(x, y) {
+    const portal = document.createElement('div');
+    portal.className = 'portal';
+    portal.style.left = x + 'px';
+    portal.style.top = y + 'px';
+    document.body.appendChild(portal);
+    return portal;
+}
+
+// Hàm xử lý nhảy qua Portal sang vị trí mới
+function escapeThroughPortal(currentRect) {
+    isTeleporting = true;
+    
+    // 1. Tạo Portal tại vị trí bị kẹt
+    const giftCenterX = currentRect.left + currentRect.width / 2;
+    const giftCenterY = currentRect.top + currentRect.height / 2;
+    const entryPortal = createPortal(giftCenterX, giftCenterY);
+
+    // 2. Thu nhỏ hộp quà chui vào portal
+    giftBox.classList.add('sucking');
+
+    setTimeout(() => {
+        // Tọa độ ngẫu nhiên mới an toàn ở giữa màn hình
+        const margin = 80;
+        const maxX = window.innerWidth - currentRect.width - margin;
+        const maxY = window.innerHeight - currentRect.height - margin;
+        const newX = Math.floor(Math.random() * (maxX - margin)) + margin;
+        const newY = Math.floor(Math.random() * (maxY - margin)) + margin;
+
+        // 3. Đóng Portal cũ, tạo Portal mới ở điểm đến
+        entryPortal.classList.add('portal-exit');
+        setTimeout(() => entryPortal.remove(), 400);
+
+        const exitPortal = createPortal(newX + currentRect.width / 2, newY + currentRect.height / 2);
+
+        // Đặt hộp quà sang vị trí mới
+        giftBox.style.left = newX + 'px';
+        giftBox.style.top = newY + 'px';
+
+        // 4. Hộp quà chui ra khỏi Portal mới
+        setTimeout(() => {
+            giftBox.classList.remove('sucking');
+            exitPortal.classList.add('portal-exit');
+            setTimeout(() => {
+                exitPortal.remove();
+                isTeleporting = false;
+            }, 400);
+        }, 100);
+
+    }, 400); // Thời gian chui vào cổng
+}
+
 document.addEventListener('mousemove', function(e) {
-    if (!giftBox) return;
+    if (!giftBox || isTeleporting) return;
 
     const rect = giftBox.getBoundingClientRect();
     const giftX = rect.left + rect.width / 2;
     const giftY = rect.top + rect.height / 2;
 
-    // 1. Tính khoảng cách và góc giữa chuột và hộp quà
     const diffX = giftX - e.clientX;
     const diffY = giftY - e.clientY;
     const distance = Math.sqrt(diffX * diffX + diffY * diffY);
 
-    // Bán kính nhạy cảm (120px)
-    const triggerDistance = 120; 
+    const triggerDistance = 120;
 
     if (distance < triggerDistance) {
-        // Thêm hiệu ứng hoảng loạn/rung nhẹ khi chuẩn bị chạy mất
         giftBox.classList.add('panic');
 
-        // 2. Tính lực đẩy & hướng chạy trốn (Tránh xa tầm chuột)
-        // Chuột càng gần, hộp chạy càng xa (Tốc độ tối đa chạy 180px)
-        const fleeStrength = (triggerDistance - distance) + 120; 
-        
-        // Tạo vector hướng bỏ chạy
-        let targetX = giftX + (diffX / (distance || 1)) * fleeStrength;
-        let targetY = giftY + (diffY / (distance || 1)) * fleeStrength;
-
-        // Giới hạn (Boundary) không cho hộp chạy ra ngoài màn hình
         const margin = 40;
         const maxX = window.innerWidth - rect.width - margin;
         const maxY = window.innerHeight - rect.height - margin;
 
+        // Kiểm tra xem có bị dồn sát góc/mép tường không
+        const isTrapped = (rect.left <= margin + 10 || rect.left >= maxX - 10 || 
+                           rect.top <= margin + 10 || rect.top >= maxY - 10);
+
+        // NẾU BỊ DỒN VÀO GÓC: Đếm đủ 1 giây (1000ms) sẽ kích hoạt Portal
+        if (isTrapped) {
+            if (!trappedTimer) {
+                trappedTimer = setTimeout(() => {
+                    escapeThroughPortal(rect);
+                    trappedTimer = null;
+                }, 1000); // Đếm đúng 1s
+            }
+        } else {
+            // Nếu thoát ra khỏi mép tường thì reset bộ đếm
+            if (trappedTimer) {
+                clearTimeout(trappedTimer);
+                trappedTimer = null;
+            }
+        }
+
+        // Né bình thường
+        const fleeStrength = (triggerDistance - distance) + 120;
+        let targetX = giftX + (diffX / (distance || 1)) * fleeStrength;
+        let targetY = giftY + (diffY / (distance || 1)) * fleeStrength;
+
         targetX = Math.max(margin, Math.min(targetX, maxX));
         targetY = Math.max(margin, Math.min(targetY, maxY));
 
-        // 3. Cho phép trượt
-        giftBox.style.left = targetX - rect.width/2 + 'px';
-        giftBox.style.top = targetY - rect.height/2 + 'px';
+        giftBox.style.left = (targetX - rect.width / 2) + 'px';
+        giftBox.style.top = (targetY - rect.height / 2) + 'px';
     } else {
-        // Hết hoảng loạn khi chuột ở xa
         giftBox.classList.remove('panic');
+        if (trappedTimer) {
+            clearTimeout(trappedTimer);
+            trappedTimer = null;
+        }
     }
 });
+	let mouseX = 0;
+let mouseY = 0;
+let isFrozen = false; // Trạng thái đóng băng của hộp quà
+
+// 1. Lắng nghe tọa độ chuột hiện tại
+document.addEventListener('mousemove', function(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// 2. Bắt sự kiện nhấn phím dấu chấm '.'
+document.addEventListener('keydown', function(e) {
+    // Kiểm tra xem người dùng có gõ phím '.' hay không (KeyNumpadDecimal hoặc Period)
+    if (e.key === '.' && giftBox && !isFrozen) {
+        shootDotBullet();
+    }
+});
+document.addEventListener('mousemove', function(e) {
+    // Nếu hộp quà đang bị đóng băng hoặc đang chuyển giao Portal thì DỪNG NÉ
+    if (!giftBox || isTeleporting || isFrozen) return;
+
+    // ... (Giữ nguyên toàn bộ đoạn logic né chuột và Portal phía dưới)
+});
+// 3. Hàm xử lý bắn đạn dấu chấm từ chuột đến hộp quà
+function shootDotBullet() {
+    const rect = giftBox.getBoundingClientRect();
+    const targetX = rect.left + rect.width / 2;
+    const targetY = rect.top + rect.height / 2;
+
+    // Tạo viên đạn dấu chấm ngay tại vị trí con trỏ chuột
+    const bullet = document.createElement('div');
+    bullet.className = 'dot-bullet';
+    bullet.innerText = '•';
+    bullet.style.left = mouseX + 'px';
+    bullet.style.top = mouseY + 'px';
+    document.body.appendChild(bullet);
+
+    // Bắn viên đạn bay tới vị trí hộp quà
+    requestAnimationFrame(() => {
+        bullet.style.left = targetX + 'px';
+        bullet.style.top = targetY + 'px';
+    });
+
+    // Khi đạn bay tới nơi (sau 250ms) -> Trúng đích & Giữ chân hộp quà 1 giây
+    setTimeout(() => {
+        bullet.remove(); // Xóa viên đạn
+        
+        // Đóng băng hộp quà
+        isFrozen = true;
+        giftBox.classList.remove('panic');
+        giftBox.classList.add('frozen');
+
+        // Sau 1 giây (1000ms) giải phóng hộp quà
+        setTimeout(() => {
+            isFrozen = false;
+            giftBox.classList.remove('frozen');
+        }, 1000);
+
+    }, 250);
+}
 // XỬ LÝ SỰ KIỆN CLICK VÀO ICON GÓC TRÊN BÊN TRÁI
 let quizTimerInterval = null;
 let quizTimeLeft = 10;
