@@ -72,7 +72,7 @@
             100% { transform: translate(1px, 1px) rotate(0deg); }
         }
 
-        /* HIỆU ỨNG CỔNG KHÔNG GIAN (PORTAL) */
+        /* HIỆU ỨNG PORTAL */
         .portal {
             position: fixed;
             width: 60px;
@@ -105,7 +105,7 @@
             transition: transform 0.4s ease-in !important;
         }
 
-        /* ĐẠN DẤU CHẤM BẮN RA TỪ CHUỘT */
+        /* ĐẠN DẤU CHẤM */
         .dot-bullet {
             position: fixed;
             font-size: 2rem;
@@ -118,7 +118,7 @@
             transition: left 0.25s linear, top 0.25s linear;
         }
 
-        /* HIỆU ỨNG HỘP QUÀ BỊ ĐÓNG BẰNG */
+        /* HIỆU ỨNG HỘP QUÀ BỊ ĐÓNG BẰNG TẠM THỜI */
         .gift-box-icon.frozen {
             filter: drop-shadow(0 0 15px #00d2ff) brightness(1.2);
             animation: freezeShake 0.1s infinite !important;
@@ -128,6 +128,13 @@
             0% { transform: translate(1px, 1px); }
             50% { transform: translate(-1px, -1px); }
             100% { transform: translate(1px, -1px); }
+        }
+
+        /* HỘP QUÀ BỊ KẾT LIỄU (GIỮ NGUYÊN MÀU ĐẬM, KHÔNG MỜ) */
+        .gift-box-icon.paralyzed {
+            filter: none !important;
+            opacity: 1 !important;
+            cursor: pointer !important;
         }
 
         /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
@@ -202,6 +209,7 @@
             font-size: 1.5rem;
         }
 
+        /* Khung cuộn chứa danh sách nút */
         .button-scroll-container {
             max-height: 75vh;
             overflow-y: auto;
@@ -211,8 +219,163 @@
             gap: 12px;
         }
 
-        /* MODAL CÂU ĐỐ & KẾT QUẢ */
-        .quiz-overlay, .result-overlay, .modal-overlay {
+        .button-scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .button-scroll-container::-webkit-scrollbar-track {
+            background: #edf2f7;
+            border-radius: 10px;
+        }
+
+        .button-scroll-container::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        /* NÚT BẤM GIAO DIỆN CHÍNH */
+        .nav-btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            background: #ffffff;
+            color: #4a5568;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            color: #667eea;
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.25);
+        }
+
+        /* MODAL BẬT NỔI & LÀM MỜ NỀN */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            width: 90%;
+            max-width: 1080px;
+            height: 80vh;
+            max-height: 920px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #a0aec0;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #e53e3e;
+        }
+
+        .modal-title {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .text-display {
+            color: #4a5568;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            white-space: pre;
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .text-display::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .text-display::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        .copy-btn-modal {
+            width: 100%;
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .copy-btn-modal:hover {
+            background: #2f855a;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(46, 160, 67, 0.95);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* QUIZ & RESULT POPUP */
+        .quiz-overlay, .result-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -226,7 +389,7 @@
             z-index: 2000;
         }
 
-        .quiz-overlay.show, .result-overlay.show, .modal-overlay.show {
+        .quiz-overlay.show, .result-overlay.show {
             display: flex;
         }
 
@@ -279,43 +442,19 @@
             margin-bottom: 20px;
             word-wrap: break-word;
         }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(46, 160, 67, 0.95);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            z-index: 1100;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .toast.show {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
 
-<!-- ICON GÓC TRÊN BÊN TRÁI -->
 <div class="random-top-left-icon" id="topLeftIcon" title="bleb bleb, don't click me">💻</div>
 
-<!-- ICON HỘP QUÀ BỎ CHẠY -->
 <div class="gift-box-icon" id="giftBoxIcon" title="catch me if you can">🎁</div>
 
-<!-- CỤM 2 THANH ĐI THEO CHUỘT -->
 <div class="bars-container" id="barsContainer">
-    <!-- Thanh Tích (ở trên) -->
     <div class="ult-bar-box" id="ultBox" title="Thanh Tích Chiêu">
         <div class="ult-bar-fill" id="ultFill"></div>
     </div>
     
-    <!-- Thanh Hồi Chiêu (ở dưới, ban đầu ẩn) -->
     <div class="cooldown-bar-box" id="cooldownBox" style="display: none;">
         <div class="cooldown-bar-fill" id="cooldownFill"></div>
     </div>
@@ -326,7 +465,6 @@
     <div class="button-scroll-container" id="buttonList"></div>
 </div>
 
-<!-- MODAL CÂU ĐỐ ICON -->
 <div class="quiz-overlay" id="quizOverlay">
     <div class="quiz-box">
         <h3>1 + 1 = ?</h3>
@@ -336,7 +474,6 @@
     </div>
 </div>
 
-<!-- MODAL KẾT QUẢ CÂU ĐỐ -->
 <div class="result-overlay" id="resultOverlay">
     <div class="result-box">
         <div class="result-message" id="resultMessage"></div>
@@ -344,10 +481,19 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <h3 class="modal-title" id="modalTitle">Tiêu đề mục</h3>
+        <div id="text-display" class="text-display"></div>
+        <button class="copy-btn-modal" onclick="copyContentFromModal()">📋 Copy</button>
+    </div>
+</div>
+
 <div id="toast" class="toast">Copied!</div>
 
 <script>
-// 1. Khởi tạo Icon ngẫu nhiên góc trái
+// 1. Tạo Icon ngẫu nhiên góc trái
 (function generateRandomSystemIcon() {
     const symbolRanges = [
         [0x2300, 0x23FF], [0x2600, 0x26FF], [0x2700, 0x27BF],
@@ -383,7 +529,7 @@ let isCoolingDown = false;
 let ultEnergy = 0;
 let isParalyzed = false;
 
-// 2. Hàm Portal & Né chuột
+// 2. Portal & Né chuột
 function createPortal(x, y) {
     const portal = document.createElement('div');
     portal.className = 'portal';
@@ -427,7 +573,7 @@ function escapeThroughPortal(currentRect) {
     }, 400);
 }
 
-// 3. Sự kiện di chuyển chuột (Di chuyển 2 thanh & Hộp quà né chuột)
+// 3. Sự kiện chuột (Di chuyển 2 thanh & Hộp quà né chuột)
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
@@ -437,7 +583,8 @@ document.addEventListener('mousemove', function(e) {
         barsContainer.style.top = mouseY + 'px';
     }
 
-    if (!giftBox || isTeleporting || isFrozen) return;
+    // Nếu đã bị KẾT LIỄU (`isParalyzed`), bị ĐÓNG BẰNG, hoặc DỊCH CHUYỂN -> DỪNG NÉ HOÀN TOÀN
+    if (!giftBox || isTeleporting || isFrozen || isParalyzed) return;
 
     const rect = giftBox.getBoundingClientRect();
     const giftX = rect.left + rect.width / 2;
@@ -487,7 +634,7 @@ document.addEventListener('mousemove', function(e) {
     }
 });
 
-// 4. Lắng nghe phím bắn đạn (.) & Chiêu cuối (Alt + .)
+// 4. Sự kiện nhấn phím
 document.addEventListener('keydown', function(e) {
     if (e.altKey && (e.key === '.' || e.code === 'Period')) {
         e.preventDefault();
@@ -502,11 +649,10 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// 5. Xử lý Bắn đạn, Thanh Hồi Chiêu & Thanh Tích Năng Lượng
+// 5. Bắn đạn & Hồi chiêu
 function shootDotBullet() {
     isCoolingDown = true;
 
-    // Thanh hồi chiêu dưới hiện ra
     cooldownBox.style.display = 'block';
     cooldownFill.style.transition = 'none';
     cooldownFill.style.width = '0%';
@@ -516,7 +662,6 @@ function shootDotBullet() {
         cooldownFill.style.width = '100%';
     });
 
-    // Tích năng lượng cho thanh trên
     if (ultEnergy < 20) {
         ultEnergy++;
         const percent = (ultEnergy / 20) * 100;
@@ -527,7 +672,6 @@ function shootDotBullet() {
         }
     }
 
-    // Bắn đạn
     const rect = giftBox.getBoundingClientRect();
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
@@ -556,14 +700,13 @@ function shootDotBullet() {
         }, 1000);
     }, 250);
 
-    // Sau 3s: Hồi chiêu xong -> Thanh dưới tự biến mất
     setTimeout(() => {
         isCoolingDown = false;
         cooldownBox.style.display = 'none';
     }, 3000);
 }
 
-// 6. Chiêu Kết Liễu
+// 6. Chiêu Kết Liễu (Giữ màu đậm, ngắt chuyển động)
 function executeUltimateAttack() {
     ultEnergy = 0;
     ultFill.style.width = '0%';
@@ -590,12 +733,13 @@ function executeUltimateAttack() {
 
     setTimeout(() => {
         ultBeam.remove();
-        isParalyzed = true;
+        isParalyzed = true; // Khóa di chuyển của hộp quà
         giftBox.classList.remove('panic', 'frozen');
-        giftBox.style.opacity = '0.5';
+        giftBox.classList.add('paralyzed'); // Đảm bảo màu sắc nguyên bản, đậm rõ
     }, 200);
 }
 
+// Click vào hộp quà sau khi kết liễu
 if (giftBox) {
     giftBox.addEventListener('click', function() {
         if (isParalyzed) {
@@ -604,7 +748,7 @@ if (giftBox) {
     });
 }
 
-// 7. Logic Modal Câu đố góc trái
+// 7. Quiz & Result Modal
 let quizTimerInterval = null;
 let quizTimeLeft = 10;
 const quizInput = document.getElementById('quizInput');
