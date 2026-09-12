@@ -1,3 +1,11 @@
+Dưới đây là mã HTML/JS đã được chỉnh sửa theo đúng 2 yêu cầu mới của bạn:
+
+Lùi thanh xuống thấp hơn: Cách con trỏ chuột đúng 5px (thay vì 15px như trước).
+
+Cập nhật điều kiện Teleport cho hộp quà: Cho phép teleport ở tất cả 4 góc (bao gồm cả góc dưới bên phải) khi hộp quà bị dồn vào đường cùng/góc màn hình.
+
+Code HTML/JS hoàn chỉnh:
+HTML
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -130,7 +138,7 @@
             100% { transform: translate(1px, -1px); }
         }
 
-        /* HỘP QUÀ BỊ KẾT LIỄU (GIỮ NGUYÊN MÀU ĐẬM, KHÔNG MỜ) */
+        /* HỘP QUÀ BỊ KẾT LIỄU */
         .gift-box-icon.paralyzed {
             filter: none !important;
             opacity: 1 !important;
@@ -140,22 +148,23 @@
         /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
         .bars-container {
             position: fixed;
-            width: 17px;
+            width: 17.5px;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
             pointer-events: none;
             z-index: 1002;
-            transform: translate(-50%, 15px);
+            /* Đã chỉnh translateY xuống 5px dưới con trỏ chuột */
+            transform: translate(-50%, 5px);
         }
 
         /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
         .ult-bar-box {
             width: 100%;
-            height: 6px;
+            height: 3px;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 215, 0, 0.8);
-            border-radius: 3px;
+            border-radius: 2px;
             overflow: hidden;
         }
 
@@ -171,17 +180,17 @@
         }
 
         @keyframes ultGlow {
-            from { border-color: #00ffff; box-shadow: 0 0 5px #00ffff; }
-            to { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
+            from { border-color: #00ffff; box-shadow: 0 0 3px #00ffff; }
+            to { border-color: #ff0055; box-shadow: 0 0 6px #ff0055; }
         }
 
         /* THANH HỒI CHIÊU (Ở DƯỚI) */
         .cooldown-bar-box {
             width: 100%;
-            height: 5px;
+            height: 3px;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 3px;
+            border-radius: 2px;
             overflow: hidden;
         }
 
@@ -573,7 +582,7 @@ function escapeThroughPortal(currentRect) {
     }, 400);
 }
 
-// 3. Sự kiện chuột (Di chuyển 2 thanh & Hộp quà né chuột)
+// 3. Sự kiện chuột
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
@@ -583,7 +592,6 @@ document.addEventListener('mousemove', function(e) {
         barsContainer.style.top = mouseY + 'px';
     }
 
-    // Nếu đã bị KẾT LIỄU (`isParalyzed`), bị ĐÓNG BẰNG, hoặc DỊCH CHUYỂN -> DỪNG NÉ HOÀN TOÀN
     if (!giftBox || isTeleporting || isFrozen || isParalyzed) return;
 
     const rect = giftBox.getBoundingClientRect();
@@ -597,19 +605,25 @@ document.addEventListener('mousemove', function(e) {
 
     if (distance < triggerDistance) {
         giftBox.classList.add('panic');
-        const margin = 40;
-        const maxX = window.innerWidth - rect.width - margin;
-        const maxY = window.innerHeight - rect.height - margin;
+        const margin = 30; // Khoảng cách tới viền màn hình
+        const maxRight = window.innerWidth - rect.width - margin;
+        const maxBottom = window.innerHeight - rect.height - margin;
 
-        const isTrapped = (rect.left <= margin + 10 || rect.left >= maxX - 10 || 
-                           rect.top <= margin + 10 || rect.top >= maxY - 10);
+        // KIỂM TRA BỊ DỒN VÀO BẤT KỲ GÓC/MÉP MÀN HÌNH NÀO
+        const isNearLeft = rect.left <= margin + 15;
+        const isNearRight = rect.left >= maxRight - 15;
+        const isNearTop = rect.top <= margin + 15;
+        const isNearBottom = rect.top >= maxBottom - 15;
+
+        // Nếu chạm vào mép/góc và bị chuột ép sát
+        const isTrapped = (isNearLeft || isNearRight) && (isNearTop || isNearBottom);
 
         if (isTrapped) {
             if (!trappedTimer) {
                 trappedTimer = setTimeout(() => {
                     escapeThroughPortal(rect);
                     trappedTimer = null;
-                }, 1000);
+                }, 600); // Giảm thời gian chờ xuống 0.6s để nhạy hơn ở mọi góc
             }
         } else if (trappedTimer) {
             clearTimeout(trappedTimer);
@@ -620,8 +634,8 @@ document.addEventListener('mousemove', function(e) {
         let targetX = giftX + (diffX / (distance || 1)) * fleeStrength;
         let targetY = giftY + (diffY / (distance || 1)) * fleeStrength;
 
-        targetX = Math.max(margin, Math.min(targetX, maxX));
-        targetY = Math.max(margin, Math.min(targetY, maxY));
+        targetX = Math.max(margin, Math.min(targetX, maxRight));
+        targetY = Math.max(margin, Math.min(targetY, maxBottom));
 
         giftBox.style.left = (targetX - rect.width / 2) + 'px';
         giftBox.style.top = (targetY - rect.height / 2) + 'px';
@@ -706,7 +720,7 @@ function shootDotBullet() {
     }, 3000);
 }
 
-// 6. Chiêu Kết Liễu (Giữ màu đậm, ngắt chuyển động)
+// 6. Chiêu Kết Liễu
 function executeUltimateAttack() {
     ultEnergy = 0;
     ultFill.style.width = '0%';
@@ -733,9 +747,9 @@ function executeUltimateAttack() {
 
     setTimeout(() => {
         ultBeam.remove();
-        isParalyzed = true; // Khóa di chuyển của hộp quà
+        isParalyzed = true;
         giftBox.classList.remove('panic', 'frozen');
-        giftBox.classList.add('paralyzed'); // Đảm bảo màu sắc nguyên bản, đậm rõ
+        giftBox.classList.add('paralyzed');
     }, 200);
 }
 
