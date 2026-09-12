@@ -130,6 +130,60 @@
     50% { transform: translate(-1px, -1px); }
     100% { transform: translate(1px, -1px); }
 }
+			/* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
+.bars-container {
+    position: fixed;
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    pointer-events: none;
+    z-index: 1002;
+    transform: translate(-50%, 15px); /* Nằm ngay dưới con trỏ chuột */
+}
+
+/* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
+.ult-bar-box {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.8);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.ult-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffaa00, #00ffff);
+    transition: width 0.2s ease-out;
+}
+
+.ult-bar-box.ready {
+    animation: ultGlow 0.5s infinite alternate;
+}
+
+@keyframes ultGlow {
+    from { border-color: #00ffff; box-shadow: 0 0 5px #00ffff; }
+    to { border-color: #ff0055; box-shadow: 0 0 10px #ff0055; }
+}
+
+/* THANH HỒI CHIÊU (Ở DƯỚI) */
+.cooldown-bar-box {
+    width: 100%;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cooldown-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: #ff3366;
+    transition: width 3s linear; /* Hồi chiêu 3s */
+}
         /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
         .container {
             background: #ffffff;
@@ -587,16 +641,149 @@ document.addEventListener('mousemove', function(e) {
         }
     }
 });
-	let mouseX = 0;
+let mouseX = 0;
 let mouseY = 0;
-let isFrozen = false; // Trạng thái đóng băng của hộp quà
+let isFrozen = false;
+let isCoolingDown = false;
+let ultEnergy = 0; // Tích đủ 20 phát
+let isParalyzed = false;
 
-// 1. Lắng nghe tọa độ chuột hiện tại
+const barsContainer = document.getElementById('barsContainer');
+const ultFill = document.getElementById('ultFill');
+const ultBox = document.getElementById('ultBox');
+const cooldownBox = document.getElementById('cooldownBox');
+const cooldownFill = document.getElementById('cooldownFill');
+
+// 1. Cụm 2 thanh LUÔN LUÔN đi theo con trỏ chuột
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
+
+    if (barsContainer) {
+        barsContainer.style.left = mouseX + 'px';
+        barsContainer.style.top = mouseY + 'px';
+    }
 });
 
+// 2. Lắng nghe gõ phím
+document.addEventListener('keydown', function(e) {
+    // Tổ hợp Alt + . (Chiêu kết liễu)
+    if (e.altKey && (e.key === '.' || e.code === 'Period')) {
+        e.preventDefault();
+        if (ultEnergy >= 20 && !isParalyzed) {
+            executeUltimateAttack();
+        }
+        return;
+    }
+
+    // Phím '.' bắn đạn
+    if (e.key === '.' && giftBox && !isFrozen && !isCoolingDown && !isParalyzed) {
+        shootDotBullet();
+    }
+});
+
+// 3. Xử lý Bắn đạn, Tích năng lượng và Hồi chiêu 3s
+function shootDotBullet() {
+    isCoolingDown = true;
+
+    // --- XỬ LÝ THANH HỒI CHIÊU (Ở DƯỚI) ---
+    cooldownBox.style.display = 'block'; // Hiện thanh dưới
+    cooldownFill.style.transition = 'none';
+    cooldownFill.style.width = '0%';
+
+    requestAnimationFrame(() => {
+        cooldownFill.style.transition = 'width 3s linear';
+        cooldownFill.style.width = '100%'; // Chạy đầy trong 3s
+    });
+
+    // --- XỬ LÝ THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) ---
+    if (ultEnergy < 20) {
+        ultEnergy++;
+        const percent = (ultEnergy / 20) * 100;
+        ultFill.style.width = percent + '%';
+
+        if (ultEnergy === 20) {
+            ultBox.classList.add('ready'); // Đầy 100% thì phát sáng
+        }
+    }
+
+    // --- BẮN ĐẠN DẤU CHẤM TRÚNG HỘP QUÀ ---
+    const rect = giftBox.getBoundingClientRect();
+    const targetX = rect.left + rect.width / 2;
+    const targetY = rect.top + rect.height / 2;
+
+    const bullet = document.createElement('div');
+    bullet.className = 'dot-bullet';
+    bullet.innerText = '•';
+    bullet.style.left = mouseX + 'px';
+    bullet.style.top = mouseY + 'px';
+    document.body.appendChild(bullet);
+
+    requestAnimationFrame(() => {
+        bullet.style.left = targetX + 'px';
+        bullet.style.top = targetY + 'px';
+    });
+
+    setTimeout(() => {
+        bullet.remove();
+        isFrozen = true;
+        giftBox.classList.remove('panic');
+        giftBox.classList.add('frozen');
+
+        setTimeout(() => {
+            isFrozen = false;
+            giftBox.classList.remove('frozen');
+        }, 1000);
+    }, 250);
+
+    // --- SAU 3 GIÂY: HỒI CHIÊU XONG -> THANH DƯỚI BIẾN MẤT ---
+    setTimeout(() => {
+        isCoolingDown = false;
+        cooldownBox.style.display = 'none'; // Ẩn thanh dưới đi
+    }, 3000);
+}
+
+// 4. Chiêu Kết Liễu (Alt + .)
+function executeUltimateAttack() {
+    ultEnergy = 0;
+    ultFill.style.width = '0%';
+    ultBox.classList.remove('ready');
+
+    const rect = giftBox.getBoundingClientRect();
+    const targetX = rect.left + rect.width / 2;
+    const targetY = rect.top + rect.height / 2;
+
+    const ultBeam = document.createElement('div');
+    ultBeam.style.cssText = `
+        position: fixed; left: ${mouseX}px; top: ${mouseY}px;
+        width: 10px; height: 10px; background: #00ffff;
+        box-shadow: 0 0 30px 15px #ff0055; border-radius: 50%;
+        z-index: 1003; transition: all 0.2s ease-in;
+    `;
+    document.body.appendChild(ultBeam);
+
+    requestAnimationFrame(() => {
+        ultBeam.style.left = targetX + 'px';
+        ultBeam.style.top = targetY + 'px';
+        ultBeam.style.transform = 'scale(3)';
+    });
+
+    setTimeout(() => {
+        ultBeam.remove();
+        isParalyzed = true;
+        giftBox.classList.remove('panic', 'frozen');
+        giftBox.classList.add('paralyzed');
+    }, 200);
+}
+
+// 5. Mở hộp quà khi bị kết liễu
+if (giftBox) {
+    giftBox.addEventListener('click', function() {
+        if (isParalyzed) {
+            alert("chẳng có j hết, hahaha");
+        }
+    });
+}
 // 2. Bắt sự kiện nhấn phím dấu chấm '.'
 document.addEventListener('keydown', function(e) {
     // Kiểm tra xem người dùng có gõ phím '.' hay không (KeyNumpadDecimal hoặc Period)
