@@ -150,14 +150,38 @@
         }
 
         /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
-        .ult-bar-box {
-            width: 100%;
-            height: 3px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 215, 0, 0.8);
-            border-radius: 2px;
-            overflow: hidden;
-        }
+        /* Tùy chỉnh hiệu ứng mượt khi ẩn/hiện */
+.ult-bar-box {
+    width: 100%;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.8);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Thêm dòng này */
+}
+
+/* Class dùng để ẩn thanh ulti */
+/* Ẩn thanh Ulti */
+.ult-bar-box.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Con trỏ chuột giả thực hiện pha lao tới */
+.ghost-cursor {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 9999;
+    /* Dùng SVG hình con trỏ chuột chuẩn (mũi tên nhọn hướng lên trên - trái) */
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='black' stroke='white' stroke-width='1.5'><path d='M3 3l7 18 3-7 7-3L3 3z'/></svg>") no-repeat center/contain;
+    /* Đặt tâm xoay/di chuyển đúng vào đỉnh nhọn góc trên-trái (đầu mũi tên) */
+    transform-origin: 3px 3px;
+    filter: drop-shadow(0 0 6px #00ffff); /* Hiệu ứng phát sáng cho Ulti */
+}
 
         .ult-bar-fill {
             width: 0%;
@@ -742,37 +766,66 @@ function shootDotBullet() {
     }, 3000);
 }
 
-// 6. Chiêu Kết Liễu
 function executeUltimateAttack() {
+    // 1. Reset năng lượng và ẨN THANH ULTI NGAY LẬP TỨC
     ultEnergy = 0;
     ultFill.style.width = '0%';
     ultBox.classList.remove('ready');
+    ultBox.classList.add('hidden'); // Ẩn thanh Ulti đi
 
+    // 2. Lấy vị trí hộp quà & con trỏ chuột thực
     const rect = giftBox.getBoundingClientRect();
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
 
-    const ultBeam = document.createElement('div');
-    ultBeam.style.cssText = `
-        position: fixed; left: ${mouseX}px; top: ${mouseY}px;
-        width: 10px; height: 10px; background: #00ffff;
-        box-shadow: 0 0 30px 15px #ff0055; border-radius: 50%;
-        z-index: 1003; transition: all 0.2s ease-in;
-    `;
-    document.body.appendChild(ultBeam);
+    // Tính khoảng cách (dx, dy) từ chuột đến hộp quà
+    const dx = targetX - mouseX;
+    const dy = targetY - mouseY;
 
+    // Tính góc chĩa đầu nhọn con trỏ giả về hộp quà
+    // (Hình SVG con trỏ mặc định chĩa góc -135 độ, ta cộng thêm offset để đầu nhọn hướng chuẩn mục tiêu)
+    const angleRad = Math.atan2(dy, dx);
+    const angleDeg = angleRad * (180 / Math.PI) + 135;
+
+    // 3. Tạo con trỏ chuột giả tại vị trí chuột thực
+    const ghost = document.createElement('div');
+    ghost.className = 'ghost-cursor';
+    ghost.style.left = mouseX + 'px';
+    ghost.style.top = mouseY + 'px';
+    
+    // Đặt hướng xoay ban đầu chĩa về hộp quà
+    ghost.style.transform = `rotate(${angleDeg}deg) scale(1)`;
+    ghost.style.transition = 'all 0.18s cubic-bezier(0.1, 0.7, 0.1, 1)'; // Tốc độ lao cực nhanh
+    document.body.appendChild(ghost);
+
+    // 4. BẮT ĐẦU PHA LAO THẲNG VÀO HỘP QUÀ
     requestAnimationFrame(() => {
-        ultBeam.style.left = targetX + 'px';
-        ultBeam.style.top = targetY + 'px';
-        ultBeam.style.transform = 'scale(3)';
+        // Lao đầu nhọn tới tâm hộp quà & phóng to nhẹ tạo lực va đập
+        ghost.style.left = targetX + 'px';
+        ghost.style.top = targetY + 'px';
+        ghost.style.transform = `rotate(${angleDeg}deg) scale(1.4)`;
     });
 
+    // 5. SAU KHI VÂN ĐẬP: RÚT LÙI VỀ VỊ TRÍ CHUỘT CŨ & TÊ LIỆT HỘP QUÀ
     setTimeout(() => {
-        ultBeam.remove();
+        // Hộp quà bị choáng/tê liệt
         isParalyzed = true;
         giftBox.classList.remove('panic', 'frozen');
         giftBox.classList.add('paralyzed');
-    }, 200);
+
+        // Rút con trỏ giả lùi về vị trí chuột thực
+        ghost.style.transition = 'all 0.2s ease-out';
+        ghost.style.left = mouseX + 'px';
+        ghost.style.top = mouseY + 'px';
+        ghost.style.transform = `rotate(${angleDeg}deg) scale(0.5)`;
+        ghost.style.opacity = '0';
+
+        // Xóa con trỏ giả khỏi giao diện sau khi về vị trí
+        setTimeout(() => {
+            ghost.remove();
+        }, 200);
+
+    }, 180); // Thời gian lao tới chạm mục tiêu (180ms)
 }
 
 if (giftBox) {
