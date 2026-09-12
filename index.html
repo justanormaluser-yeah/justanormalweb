@@ -137,7 +137,7 @@
             cursor: pointer !important;
         }
 
-        /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT (CÁCH 5PX) */
+        /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
         .bars-container {
             position: fixed;
             width: 17.5px;
@@ -146,7 +146,7 @@
             gap: 2px;
             pointer-events: none;
             z-index: 1002;
-            transform: translate(-50%, 25px);
+            transform: translate(-45%, 25px); /* Chỉnh vị trí khoảng cách 2 thanh so với con trỏ ở đây */
         }
 
         /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
@@ -230,6 +230,31 @@
         .button-scroll-container::-webkit-scrollbar-thumb {
             background: #cbd5e0;
             border-radius: 10px;
+        }
+
+        /* NÚT BẤM GIAO DIỆN CHÍNH (NGUYÊN BẢN 100%) */
+        .nav-btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            background: #ffffff;
+            color: #4a5568;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            color: #667eea;
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.25);
         }
 
         /* MODAL BẬT NỔI & LÀM MỜ NỀN */
@@ -458,6 +483,47 @@
 <div id="toast" class="toast">Copied!</div>
 
 <script>
+// Dữ liệu danh sách bài tập C++ của bạn
+const tasksData = [
+    { title: "Task 1: Hello World", content: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello World!";\n    return 0;\n}' },
+    { title: "Task 2: Sum of Two Numbers", content: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << a + b;\n    return 0;\n}' }
+];
+
+// Tạo các nút danh sách
+function renderButtons() {
+    const list = document.getElementById('buttonList');
+    if (!list) return;
+    list.innerHTML = '';
+    tasksData.forEach((task, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn';
+        btn.innerHTML = `<span>📌</span> ${task.title}`;
+        btn.onclick = () => openModal(task.title, task.content);
+        list.appendChild(btn);
+    });
+}
+renderButtons();
+
+// Quản lý Modal
+function openModal(title, content) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('text-display').innerText = content;
+    document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function copyContentFromModal() {
+    const text = document.getElementById('text-display').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+}
+
 // 1. Tạo Icon ngẫu nhiên góc trái
 (function generateRandomSystemIcon() {
     const symbolRanges = [
@@ -494,7 +560,7 @@ let isCoolingDown = false;
 let ultEnergy = 0;
 let isParalyzed = false;
 
-// 2. Hàm tạo Portal & Teleport
+// 2. Portal & Né chuột
 function createPortal(x, y) {
     const portal = document.createElement('div');
     portal.className = 'portal';
@@ -540,7 +606,7 @@ function escapeThroughPortal(currentRect) {
     }, 350);
 }
 
-// 3. Xử lý di chuyển chuột và né tránh
+// 3. Sự kiện chuột
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
@@ -567,7 +633,6 @@ document.addEventListener('mousemove', function(e) {
         const maxRight = window.innerWidth - rect.width - margin;
         const maxBottom = window.innerHeight - rect.height - margin;
 
-        // KIỂM TRA CHẠM BẤT KỲ MÉP / GÓC NÀO CỦA MÀN HÌNH
         const isNearLeft = rect.left <= margin + 25;
         const isNearRight = rect.left >= maxRight - 25;
         const isNearTop = rect.top <= margin + 25;
@@ -580,7 +645,7 @@ document.addEventListener('mousemove', function(e) {
                 trappedTimer = setTimeout(() => {
                     escapeThroughPortal(rect);
                     trappedTimer = null;
-                }, 200); // 200ms để kích hoạt portal nhanh chóng
+                }, 200);
             }
         } else if (trappedTimer) {
             clearTimeout(trappedTimer);
@@ -677,7 +742,7 @@ function shootDotBullet() {
     }, 3000);
 }
 
-// 6. Tuyệt chiêu
+// 6. Chiêu Kết Liễu
 function executeUltimateAttack() {
     ultEnergy = 0;
     ultFill.style.width = '0%';
@@ -788,7 +853,6 @@ quizInput.addEventListener('keypress', function(e) {
         checkQuizAnswer();
     }
 });
-
 // 1. Danh sách tiêu đề
 const titles = [
     "Câu 1: Pangram",
@@ -1524,7 +1588,40 @@ signed main() {
 	}
 	return 0;
 }`, 
-`Not available yet...`,
+`#include <bits/stdc++.h>
+#define int long long
+using namespace std;
+const int maxn = 10005;
+int a[maxn];
+int cnt[400005] = {0};
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("CNTP8.INP", "r", stdin);
+	freopen("CNTP8.OUT", "w", stdout);
+	int n, k;
+	cin >> n >> k;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+	}
+	int ans = 0;
+	for (int x3 = 1; x3 <= n; x3++) {
+		for (int x4 = x3 + 1; x4 <= n; x4++) {
+			int t = k - a[x3] - a[x4] + 200000;
+			if (t >= 0 && t <= 400000) {
+				ans += cnt[t];
+			}
+		}
+		for (int x1 = 1; x1 < x3; x1++) {
+			int sum = a[x1] + a[x3] + 200000;
+			if (sum >= 0 && sum <= 400000) {
+				cnt[sum]++;
+			}
+		}
+	}
+	cout << ans;
+	return 0;
+}`,
 `Not available yet...`, 
 `Not available yet...`, 
 `Not available yet...`, 
