@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: none !important; /* ẨN HOÀN TOÀN CON TRỎ CHUỘT THẬT */
         }
 
         body {
@@ -20,6 +21,31 @@
             align-items: center;
             padding: 20px;
             position: relative;
+            overflow: hidden;
+        }
+
+        /* CON TRỎ GIẢ HÌNH MŨI TÊN (SVG) */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 26px;
+            pointer-events: none;
+            z-index: 10000;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='26' viewBox='0 0 20 26'><path d='M0,0 L0,22 L5.5,16.5 L9.5,25.5 L13.5,23.5 L9.5,14.5 L16.5,14.5 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1.5' stroke-linejoin='round'/></svg>");
+            background-repeat: no-repeat;
+            background-size: contain;
+            transform-origin: 0px 0px;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
+            transition: transform 0.1s linear;
+        }
+
+        /* Khi dùng Ulti: hiệu ứng xoay và phóng to */
+        .custom-cursor.attacking {
+            transition: left 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        top 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
         }
 
         /* ICON HỆ THỐNG GÓC TRÊN BÊN TRÁI */
@@ -30,7 +56,6 @@
             font-size: 2.2rem;
             z-index: 900;
             user-select: none;
-            cursor: pointer;
             transition: transform 0.2s ease;
             background: #ffffff;
             width: 50px;
@@ -54,7 +79,6 @@
             font-size: 2.5rem;
             z-index: 1000;
             user-select: none;
-            cursor: pointer;
             transition: left 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.1),
                         top 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.1),
                         transform 0.15s ease-out;
@@ -134,10 +158,9 @@
         .gift-box-icon.paralyzed {
             filter: none !important;
             opacity: 1 !important;
-            cursor: pointer !important;
         }
 
-        /* CỤM 2 THANH NẰM CẠNH CON TRỎ CHUỘT (DỊCH SANG BÊN PHẢI CHUỘT) */
+        /* CỤM 2 THANH NẰM BÁM THEO DƯỚI CON TRỎ GIẢ */
         .bars-container {
             position: fixed;
             width: 17.5px;
@@ -145,8 +168,8 @@
             flex-direction: column;
             gap: 2px;
             pointer-events: none;
-            z-index: 1002;
-            transform: translate(-5px, 25px); /* Dịch thanh sang bên phải con trỏ chuột */
+            z-index: 10001;
+            transform: translate(12px, 18px);
         }
 
         /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
@@ -160,11 +183,9 @@
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        /* Ẩn thanh Ulti */
         .ult-bar-box.hidden {
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .ult-bar-fill {
@@ -181,20 +202,6 @@
         @keyframes ultGlow {
             from { border-color: #00ffff; box-shadow: 0 0 3px #00ffff; }
             to { border-color: #ff0055; box-shadow: 0 0 6px #ff0055; }
-        }
-
-        /* Con trỏ giả chuẩn giao diện con trỏ Windows */
-        .ghost-cursor {
-            position: fixed;
-            width: 20px;
-            height: 26px;
-            pointer-events: none;
-            z-index: 9999;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='26' viewBox='0 0 20 26'><path d='M0,0 L0,22 L5.5,16.5 L9.5,25.5 L13.5,23.5 L9.5,14.5 L16.5,14.5 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1.5' stroke-linejoin='round'/></svg>");
-            background-repeat: no-repeat;
-            background-size: contain;
-            transform-origin: 0px 0px;
-            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
         }
 
         /* THANH HỒI CHIÊU (Ở DƯỚI) */
@@ -214,7 +221,7 @@
             transition: width 1s linear;
         }
 
-        /* KHUNG CHÍNH TRÀN RỘNG TOÀN MÀN HÌNH */
+        /* KHUNG CHÍNH */
         .container {
             background: #ffffff;
             width: 100%;
@@ -240,21 +247,6 @@
             gap: 12px;
         }
 
-        .button-scroll-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .button-scroll-container::-webkit-scrollbar-track {
-            background: #edf2f7;
-            border-radius: 10px;
-        }
-
-        .button-scroll-container::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 10px;
-        }
-
-        /* NÚT BẤM GIAO DIỆN CHÍNH */
         .nav-btn {
             width: 100%;
             padding: 16px 24px;
@@ -264,13 +256,12 @@
             border-radius: 12px;
             font-weight: 600;
             font-size: 1rem;
-            cursor: pointer;
             text-align: left;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.25s ease;
         }
 
         .nav-btn:hover {
@@ -279,7 +270,7 @@
             box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.25);
         }
 
-        /* MODAL BẬT NỔI & LÀM MỜ NỀN */
+        /* MODAL BẬT NỔI */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -320,7 +311,6 @@
             border: none;
             font-size: 1.8rem;
             color: #a0aec0;
-            cursor: pointer;
         }
 
         .modal-close:hover {
@@ -358,7 +348,6 @@
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
-            cursor: pointer;
             transition: background 0.2s;
             flex-shrink: 0;
         }
@@ -440,7 +429,6 @@
             border: none;
             border-radius: 8px;
             font-weight: bold;
-            cursor: pointer;
         }
 
         .quiz-btn:hover {
@@ -457,6 +445,9 @@
     </style>
 </head>
 <body>
+
+<!-- CON TRỎ GIẢ MẶC ĐỊNH -->
+<div class="custom-cursor" id="customCursor"></div>
 
 <div class="random-top-left-icon" id="topLeftIcon" title="bleb bleb, don't click me">💻</div>
 
@@ -556,6 +547,7 @@ function copyContentFromModal() {
 
 const giftBox = document.getElementById('giftBoxIcon');
 const barsContainer = document.getElementById('barsContainer');
+const customCursor = document.getElementById('customCursor');
 const ultFill = document.getElementById('ultFill');
 const ultBox = document.getElementById('ultBox');
 const cooldownBox = document.getElementById('cooldownBox');
@@ -577,6 +569,7 @@ let isFrozen = false;
 let isCoolingDown = false;
 let ultEnergy = 0;
 let isParalyzed = false;
+let isUltAttacking = false;
 
 function createPortal(x, y) {
     const portal = document.createElement('div');
@@ -623,9 +616,16 @@ function escapeThroughPortal(currentRect) {
     }, 350);
 }
 
+// XỬ LÝ CON TRỎ GIẢ VÀ THANH CẶP BÁM THEO CHUỘT THẬT
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
+
+    if (!isUltAttacking) {
+        customCursor.style.left = mouseX + 'px';
+        customCursor.style.top = mouseY + 'px';
+        customCursor.style.transform = 'rotate(0deg) scale(1)';
+    }
 
     if (barsContainer) {
         barsContainer.style.left = mouseX + 'px';
@@ -689,7 +689,7 @@ document.addEventListener('mousemove', function(e) {
 document.addEventListener('keydown', function(e) {
     if (e.altKey && (e.key === '.' || e.code === 'Period')) {
         e.preventDefault();
-        if (ultEnergy >= 20 && !isParalyzed) {
+        if (ultEnergy >= 20 && !isParalyzed && !isUltAttacking) {
             executeUltimateAttack();
         }
         return;
@@ -756,14 +756,16 @@ function shootDotBullet() {
     }, 1000);
 }
 
+// CHIÊU THỨC ULTI: XOAY CON TRỎ GIẢ VÀ PHÓNG VÀO HỘP QUÀ
 function executeUltimateAttack() {
-    // 1. Reset năng lượng và ẩn ngay thanh Ulti
+    isUltAttacking = true;
+
+    // Reset năng lượng & ẩn thanh Ulti
     ultEnergy = 0;
     ultFill.style.width = '0%';
     ultBox.classList.remove('ready');
     ultBox.classList.add('hidden');
 
-    // 2. Lấy tọa độ hộp quà & con trỏ chuột
     const rect = giftBox.getBoundingClientRect();
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
@@ -771,42 +773,35 @@ function executeUltimateAttack() {
     const dx = targetX - mouseX;
     const dy = targetY - mouseY;
 
-    // Tính góc xoay chuẩn để đỉnh nhọn con trỏ chĩa thẳng tới tâm hộp quà
+    // Tính góc xoay đỉnh nhọn mũi tên chĩa thẳng tới hộp quà
     const angleRad = Math.atan2(dy, dx);
     const angleDeg = angleRad * (180 / Math.PI) + 90;
 
-    // 3. Tạo con trỏ chuột giả chuẩn hình dạng con trỏ Windows
-    const ghost = document.createElement('div');
-    ghost.className = 'ghost-cursor';
-    ghost.style.left = mouseX + 'px';
-    ghost.style.top = mouseY + 'px';
-    
-    ghost.style.transform = `rotate(${angleDeg}deg) scale(1)`;
-    ghost.style.transition = 'all 0.16s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    document.body.appendChild(ghost);
+    customCursor.classList.add('attacking');
 
-    // 4. Lao thẳng đầu nhọn vào hộp quà
+    // Phóng con trỏ giả tới vị trí hộp quà
     requestAnimationFrame(() => {
-        ghost.style.left = targetX + 'px';
-        ghost.style.top = targetY + 'px';
-        ghost.style.transform = `rotate(${angleDeg}deg) scale(1.2)`;
+        customCursor.style.left = targetX + 'px';
+        customCursor.style.top = targetY + 'px';
+        customCursor.style.transform = `rotate(${angleDeg}deg) scale(1.3)`;
     });
 
-    // 5. Va đập, làm tê liệt hộp quà và rút lùi về vị trí cũ
+    // Sau khi đâm vào hộp quà
     setTimeout(() => {
         isParalyzed = true;
         giftBox.classList.remove('panic', 'frozen');
         giftBox.classList.add('paralyzed');
 
-        ghost.style.transition = 'all 0.18s ease-out';
-        ghost.style.left = mouseX + 'px';
-        ghost.style.top = mouseY + 'px';
-        ghost.style.transform = `rotate(${angleDeg}deg) scale(0.6)`;
-        ghost.style.opacity = '0';
+        // Rút về vị trí con trỏ thật hiện tại
+        customCursor.style.left = mouseX + 'px';
+        customCursor.style.top = mouseY + 'px';
+        customCursor.style.transform = `rotate(${angleDeg}deg) scale(1)`;
 
         setTimeout(() => {
-            ghost.remove();
-        }, 180);
+            customCursor.classList.remove('attacking');
+            customCursor.style.transform = 'rotate(0deg) scale(1)';
+            isUltAttacking = false;
+        }, 160);
 
     }, 160);
 }
