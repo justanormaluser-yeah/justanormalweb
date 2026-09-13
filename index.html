@@ -170,17 +170,20 @@
 }
 
 /* Con trỏ chuột giả thực hiện pha lao tới */
+/* Con trỏ giả chuẩn giao diện con trỏ Windows */
 .ghost-cursor {
     position: fixed;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 26px;
     pointer-events: none;
     z-index: 9999;
-    /* Dùng SVG hình con trỏ chuột chuẩn (mũi tên nhọn hướng lên trên - trái) */
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='black' stroke='white' stroke-width='1.5'><path d='M3 3l7 18 3-7 7-3L3 3z'/></svg>") no-repeat center/contain;
-    /* Đặt tâm xoay/di chuyển đúng vào đỉnh nhọn góc trên-trái (đầu mũi tên) */
-    transform-origin: 3px 3px;
-    filter: drop-shadow(0 0 6px #00ffff); /* Hiệu ứng phát sáng cho Ulti */
+    /* Mã SVG vẽ chính xác con trỏ chuột trắng viền đen chuẩn Windows */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='26' viewBox='0 0 20 26'><path d='M0,0 L0,22 L5.5,16.5 L9.5,25.5 L13.5,23.5 L9.5,14.5 L16.5,14.5 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1.5' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-size: contain;
+    /* Đặt tâm xoay chính xác tại ĐỈNH MŨI NHỌN góc trên-trái (0,0) */
+    transform-origin: 0px 0px;
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
 }
 
         .ult-bar-fill {
@@ -767,44 +770,61 @@ function shootDotBullet() {
 }
 
 function executeUltimateAttack() {
-    // 1. Reset năng lượng và ẨN THANH ULTI NGAY LẬP TỨC
+    // 1. Reset năng lượng và ẩn ngay thanh Ulti
     ultEnergy = 0;
     ultFill.style.width = '0%';
     ultBox.classList.remove('ready');
-    ultBox.classList.add('hidden'); // Ẩn thanh Ulti đi
+    ultBox.classList.add('hidden');
 
-    // 2. Lấy vị trí hộp quà & con trỏ chuột thực
+    // 2. Lấy tọa độ hộp quà & con trỏ chuột
     const rect = giftBox.getBoundingClientRect();
     const targetX = rect.left + rect.width / 2;
     const targetY = rect.top + rect.height / 2;
 
-    // Tính khoảng cách (dx, dy) từ chuột đến hộp quà
     const dx = targetX - mouseX;
     const dy = targetY - mouseY;
 
-    // Tính góc chĩa đầu nhọn con trỏ giả về hộp quà
-    // (Hình SVG con trỏ mặc định chĩa góc -135 độ, ta cộng thêm offset để đầu nhọn hướng chuẩn mục tiêu)
+    // Tính góc xoay chính xác để đỉnh nhọn con trỏ chĩa thẳng tới tâm hộp quà
     const angleRad = Math.atan2(dy, dx);
-    const angleDeg = angleRad * (180 / Math.PI) + 135;
+    const angleDeg = angleRad * (180 / Math.PI) + 90;
 
-    // 3. Tạo con trỏ chuột giả tại vị trí chuột thực
+    // 3. Tạo con trỏ chuột giả chuẩn hình dạng con trỏ Windows
     const ghost = document.createElement('div');
     ghost.className = 'ghost-cursor';
     ghost.style.left = mouseX + 'px';
     ghost.style.top = mouseY + 'px';
     
-    // Đặt hướng xoay ban đầu chĩa về hộp quà
+    // Đặt hướng xoay chĩa đầu nhọn về hộp quà
     ghost.style.transform = `rotate(${angleDeg}deg) scale(1)`;
-    ghost.style.transition = 'all 0.18s cubic-bezier(0.1, 0.7, 0.1, 1)'; // Tốc độ lao cực nhanh
+    ghost.style.transition = 'all 0.16s cubic-bezier(0.2, 0.8, 0.2, 1)';
     document.body.appendChild(ghost);
 
-    // 4. BẮT ĐẦU PHA LAO THẲNG VÀO HỘP QUÀ
+    // 4. Lao thẳng đầu nhọn vào hộp quà
     requestAnimationFrame(() => {
-        // Lao đầu nhọn tới tâm hộp quà & phóng to nhẹ tạo lực va đập
         ghost.style.left = targetX + 'px';
         ghost.style.top = targetY + 'px';
-        ghost.style.transform = `rotate(${angleDeg}deg) scale(1.4)`;
+        ghost.style.transform = `rotate(${angleDeg}deg) scale(1.2)`;
     });
+
+    // 5. Va đập, làm tê liệt hộp quà và rút lùi về vị trí cũ
+    setTimeout(() => {
+        isParalyzed = true;
+        giftBox.classList.remove('panic', 'frozen');
+        giftBox.classList.add('paralyzed');
+
+        // Rút lùi con trỏ về vị trí chuột thực
+        ghost.style.transition = 'all 0.18s ease-out';
+        ghost.style.left = mouseX + 'px';
+        ghost.style.top = mouseY + 'px';
+        ghost.style.transform = `rotate(${angleDeg}deg) scale(0.6)`;
+        ghost.style.opacity = '0';
+
+        setTimeout(() => {
+            ghost.remove();
+        }, 180);
+
+    }, 160);
+}
 
     // 5. SAU KHI VÂN ĐẬP: RÚT LÙI VỀ VỊ TRÍ CHUỘT CŨ & TÊ LIỆT HỘP QUÀ
     setTimeout(() => {
