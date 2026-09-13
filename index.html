@@ -137,7 +137,7 @@
             cursor: pointer !important;
         }
 
-        /* CỤM 2 THANH NẰM DƯỚI CON TRỎ CHUỘT */
+        /* CỤM 2 THANH NẰM CẠNH CON TRỎ CHUỘT (DỊCH SANG BÊN PHẢI CHUỘT) */
         .bars-container {
             position: fixed;
             width: 17.5px;
@@ -146,45 +146,26 @@
             gap: 2px;
             pointer-events: none;
             z-index: 1002;
-            transform: translate(-5px, 25px); /* Chỉnh vị trí khoảng cách 2 thanh so với con trỏ ở đây */
+            transform: translate(12px, 15px); /* Dịch thanh sang bên phải con trỏ chuột */
         }
 
         /* THANH TÍCH NĂNG LƯỢNG (Ở TRÊN) */
-        /* Tùy chỉnh hiệu ứng mượt khi ẩn/hiện */
-.ult-bar-box {
-    width: 100%;
-    height: 3px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 215, 0, 0.8);
-    border-radius: 2px;
-    overflow: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease; /* Thêm dòng này */
-}
+        .ult-bar-box {
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.8);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
 
-/* Class dùng để ẩn thanh ulti */
-/* Ẩn thanh Ulti */
-.ult-bar-box.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Con trỏ chuột giả thực hiện pha lao tới */
-/* Con trỏ giả chuẩn giao diện con trỏ Windows */
-.ghost-cursor {
-    position: fixed;
-    width: 20px;
-    height: 26px;
-    pointer-events: none;
-    z-index: 9999;
-    /* Mã SVG vẽ chính xác con trỏ chuột trắng viền đen chuẩn Windows */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='26' viewBox='0 0 20 26'><path d='M0,0 L0,22 L5.5,16.5 L9.5,25.5 L13.5,23.5 L9.5,14.5 L16.5,14.5 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1.5' stroke-linejoin='round'/></svg>");
-    background-repeat: no-repeat;
-    background-size: contain;
-    /* Đặt tâm xoay chính xác tại ĐỈNH MŨI NHỌN góc trên-trái (0,0) */
-    transform-origin: 0px 0px;
-    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
-}
+        /* Ẩn thanh Ulti */
+        .ult-bar-box.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
 
         .ult-bar-fill {
             width: 0%;
@@ -200,6 +181,20 @@
         @keyframes ultGlow {
             from { border-color: #00ffff; box-shadow: 0 0 3px #00ffff; }
             to { border-color: #ff0055; box-shadow: 0 0 6px #ff0055; }
+        }
+
+        /* Con trỏ giả chuẩn giao diện con trỏ Windows */
+        .ghost-cursor {
+            position: fixed;
+            width: 20px;
+            height: 26px;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='26' viewBox='0 0 20 26'><path d='M0,0 L0,22 L5.5,16.5 L9.5,25.5 L13.5,23.5 L9.5,14.5 L16.5,14.5 Z' fill='%23ffffff' stroke='%23000000' stroke-width='1.5' stroke-linejoin='round'/></svg>");
+            background-repeat: no-repeat;
+            background-size: contain;
+            transform-origin: 0px 0px;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
         }
 
         /* THANH HỒI CHIÊU (Ở DƯỚI) */
@@ -259,7 +254,7 @@
             border-radius: 10px;
         }
 
-        /* NÚT BẤM GIAO DIỆN CHÍNH (NGUYÊN BẢN 100%) */
+        /* NÚT BẤM GIAO DIỆN CHÍNH */
         .nav-btn {
             width: 100%;
             padding: 16px 24px;
@@ -510,18 +505,16 @@
 <div id="toast" class="toast">Copied!</div>
 
 <script>
-// Dữ liệu danh sách bài tập C++ của bạn
 const tasksData = [
     { title: "Task 1: Hello World", content: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello World!";\n    return 0;\n}' },
     { title: "Task 2: Sum of Two Numbers", content: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << a + b;\n    return 0;\n}' }
 ];
 
-// Tạo các nút danh sách
 function renderButtons() {
     const list = document.getElementById('buttonList');
     if (!list) return;
     list.innerHTML = '';
-    tasksData.forEach((task, index) => {
+    tasksData.forEach((task) => {
         const btn = document.createElement('button');
         btn.className = 'nav-btn';
         btn.innerHTML = `<span>📌</span> ${task.title}`;
@@ -531,7 +524,6 @@ function renderButtons() {
 }
 renderButtons();
 
-// Quản lý Modal
 function openModal(title, content) {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('text-display').innerText = content;
@@ -551,7 +543,6 @@ function copyContentFromModal() {
     });
 }
 
-// 1. Tạo Icon ngẫu nhiên góc trái
 (function generateRandomSystemIcon() {
     const symbolRanges = [
         [0x2300, 0x23FF], [0x2600, 0x26FF], [0x2700, 0x27BF],
@@ -587,7 +578,6 @@ let isCoolingDown = false;
 let ultEnergy = 0;
 let isParalyzed = false;
 
-// 2. Portal & Né chuột
 function createPortal(x, y) {
     const portal = document.createElement('div');
     portal.className = 'portal';
@@ -633,7 +623,6 @@ function escapeThroughPortal(currentRect) {
     }, 350);
 }
 
-// 3. Sự kiện chuột
 document.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
@@ -697,7 +686,6 @@ document.addEventListener('mousemove', function(e) {
     }
 });
 
-// 4. Sự kiện phím
 document.addEventListener('keydown', function(e) {
     if (e.altKey && (e.key === '.' || e.code === 'Period')) {
         e.preventDefault();
@@ -712,7 +700,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// 5. Bắn đạn & Hồi chiêu
 function shootDotBullet() {
     isCoolingDown = true;
 
@@ -784,7 +771,7 @@ function executeUltimateAttack() {
     const dx = targetX - mouseX;
     const dy = targetY - mouseY;
 
-    // Tính góc xoay chính xác để đỉnh nhọn con trỏ chĩa thẳng tới tâm hộp quà
+    // Tính góc xoay chuẩn để đỉnh nhọn con trỏ chĩa thẳng tới tâm hộp quà
     const angleRad = Math.atan2(dy, dx);
     const angleDeg = angleRad * (180 / Math.PI) + 90;
 
@@ -794,7 +781,6 @@ function executeUltimateAttack() {
     ghost.style.left = mouseX + 'px';
     ghost.style.top = mouseY + 'px';
     
-    // Đặt hướng xoay chĩa đầu nhọn về hộp quà
     ghost.style.transform = `rotate(${angleDeg}deg) scale(1)`;
     ghost.style.transition = 'all 0.16s cubic-bezier(0.2, 0.8, 0.2, 1)';
     document.body.appendChild(ghost);
@@ -812,7 +798,6 @@ function executeUltimateAttack() {
         giftBox.classList.remove('panic', 'frozen');
         giftBox.classList.add('paralyzed');
 
-        // Rút lùi con trỏ về vị trí chuột thực
         ghost.style.transition = 'all 0.18s ease-out';
         ghost.style.left = mouseX + 'px';
         ghost.style.top = mouseY + 'px';
@@ -826,28 +811,6 @@ function executeUltimateAttack() {
     }, 160);
 }
 
-    // 5. SAU KHI VÂN ĐẬP: RÚT LÙI VỀ VỊ TRÍ CHUỘT CŨ & TÊ LIỆT HỘP QUÀ
-    setTimeout(() => {
-        // Hộp quà bị choáng/tê liệt
-        isParalyzed = true;
-        giftBox.classList.remove('panic', 'frozen');
-        giftBox.classList.add('paralyzed');
-
-        // Rút con trỏ giả lùi về vị trí chuột thực
-        ghost.style.transition = 'all 0.2s ease-out';
-        ghost.style.left = mouseX + 'px';
-        ghost.style.top = mouseY + 'px';
-        ghost.style.transform = `rotate(${angleDeg}deg) scale(0.5)`;
-        ghost.style.opacity = '0';
-
-        // Xóa con trỏ giả khỏi giao diện sau khi về vị trí
-        setTimeout(() => {
-            ghost.remove();
-        }, 200);
-
-    }, 180); // Thời gian lao tới chạm mục tiêu (180ms)
-}
-
 if (giftBox) {
     giftBox.addEventListener('click', function() {
         if (isParalyzed) {
@@ -856,7 +819,7 @@ if (giftBox) {
     });
 }
 
-// 7. Quiz & Result Modal
+// Quiz & Result Modal
 let quizTimerInterval = null;
 let quizTimeLeft = 10;
 const quizInput = document.getElementById('quizInput');
