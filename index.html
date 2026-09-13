@@ -718,7 +718,7 @@ function shootDotBullet() {
     cooldownFill.style.width = '0%';
 
     requestAnimationFrame(() => {
-        cooldownFill.style.transition = 'width 3s linear';
+        cooldownFill.style.transition = 'width 1s linear';
         cooldownFill.style.width = '100%';
     });
 
@@ -763,7 +763,7 @@ function shootDotBullet() {
     setTimeout(() => {
         isCoolingDown = false;
         cooldownBox.style.display = 'none';
-    }, 3000);
+    }, 1000);
 }
 
 function executeUltimateAttack() {
